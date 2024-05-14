@@ -1,0 +1,45 @@
+{% macro make_part_item(part) %}
+<li class="mb-1">
+  <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ part.id }}-collapse" aria-expanded="{{ 'true' if part.is_active(pagename) else 'false' }}">
+    {{ part.supertitle }}:
+    {{ part.title }}
+  </button>
+  <div class="collapse {{ 'show' if part.is_active(pagename) else '' }}" id="{{ part.id }}-collapse">
+    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+      <li><a href="{{ pathto(part.index_doc) }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded" style="font-size: 11pt">Introduction</a></li>
+      {%- for chapter in part.children %}
+      {{ make_chapter_item(chapter) }}
+      {% endfor %}
+    </ul>
+  </div>
+</li>
+{% endmacro %}
+
+
+{% macro make_chapter_item(chapter) %}
+<li class="mb-0">
+  <button class="ms-2 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ chapter.id }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}" style="font-size: 11pt">
+    {{ chapter.title }}
+  </button>
+  <div class="collapse {{ 'show' if chapter.is_active(pagename) else '' }}" id="{{ chapter.id }}-collapse">
+    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
+      <li><a href="{{ pathto(chapter.index_doc) }}" class="ms-5 link-body-emphasis d-inline-flex text-decoration-none rounded">Introduction</a></li>
+      {%- for section in chapter.children %}
+        <li><a href="{{ pathto(section.doc) }}" class="ms-5 link-body-emphasis d-inline-flex text-decoration-none rounded">{{ section.title }}</a></li>
+      {% endfor %}
+    </ul>
+  </div>
+</li>
+{% endmacro %}
+
+
+
+<a href="/" class="d-flex align-items-center pt-3 pb-4 mb-3 link-body-emphasis text-decoration-none border-bottom justify-content-center">
+  <span class="fs-5 fw-semibold">ML4P</span>
+</a>
+
+<ul class="list-unstyled ps-0">
+  {%- for part in parts %}
+  {{ make_part_item(part) }}
+  {% endfor %}
+</ul>
