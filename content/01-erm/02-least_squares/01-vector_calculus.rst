@@ -1,8 +1,6 @@
 Vector Calculus
 ===============
 
-.. math::
-
 Recall that the empirical risk with respect to the square loss is given
 by:
 
@@ -56,4 +54,51 @@ and the fact that :math:`||A||^2 = A^T A`:
     = \frac{1}{n} (2 X^T X \vec w - 2 X^T \vec y)
 
     = \frac{2}{n} X^T (X \vec w - \vec y)
+
+
+Here is a second level heading
+------------------------------
+
+And this is more text.
+
+.. exercise::
+
+   Suppose we have two vectors, :math:`\vec x = (1, 2, 3)^T` and :math:`\vec y = (4, 5, 6)^T`.
+   What is their dot product?
+
+   ---
+
+   This is the answer. :math:`f(x) = 42`
+
+   The answer can have multiple lines.
+
+   And it can even have nested content, like:
+
+   .. math::
+     
+        f(x) = 42
+
+
+.. note::
+
+   This is a test...
+
+
+Does this :math:`f(x) = 42` work?
+---------------------------------
+
+Yes it does!
+
+Here is a third level heading
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+And this is more text.
+
+There are two ways to compute this gradient. The first way is to expand the
+squared norm and then take the gradient. The second way is to use the chain rule
+and the fact that :math:`||A||^2 = A^T A`:
+
+
+Here is more content
+--------------------
 

@@ -11,12 +11,14 @@
 A truly introductory machine learning textbook by
 `Justin Eldridge <http://eldridgejm.github.io>`_.
 
-
 .. toctree::
    :maxdepth: 3
+   :hidden:
 
    00-intro/index.rst
    01-erm/index.rst
    02-probabilistic_models/index.rst
    03-decision_trees/index.rst
    04-appendix/index.rst
+   glossary.rst
+   acknowledgements.rst

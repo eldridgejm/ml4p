@@ -1,5 +1,5 @@
-Least Squares
-=============
+Least Squares and Other Linear Methods
+======================================
 
 .. toctree::
 

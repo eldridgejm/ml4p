@@ -1,14 +1,27 @@
 {% macro make_part_item(part) %}
 <li class="mb-1">
-  <button class="btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ part.id }}-collapse" aria-expanded="{{ 'true' if part.is_active(pagename) else 'false' }}">
-    {{ part.supertitle }}:
-    {{ part.title }}
-  </button>
-  <div class="collapse {{ 'show' if part.is_active(pagename) else '' }}" id="{{ part.id }}-collapse">
-    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-      <li><a href="{{ pathto(part.index_doc) }}" class="link-body-emphasis d-inline-flex text-decoration-none rounded" style="font-size: 11pt">Introduction</a></li>
+  <div id="sb-btn-{{ key_to_html_id(part.key) }}" class="mlb-sb-btn-part d-flex btn text-start border-0" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(part.key) }}-collapse" aria-expanded="{{ 'true' if part.is_active(pagename) else 'false' }}">
+
+    <!-- this is the "fold icon": an arrow that rotates 90 degrees when the part is collapsed -->
+    <!-- the rotation is controlled by mlbook-sidebar.js -->
+    <div class="align-items-end d-flex mlb-fold-icon-part">
+      <img id="sb-fold-icon-{{ key_to_html_id(part.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
+    </div>
+
+    <div class="d-flex flex-column">
+      <div class="mlb-sb-supertitle text-uppercase fw-bold">
+        {{ part.supertitle }}
+      </div>
+      <div class="fw-bold" style="font-size: 12pt">
+        {{ part.title }}
+      </div>
+    </div>
+  </div>
+  <div class="collapse {{ 'show' if part.is_active(pagename) else '' }}" id="{{ key_to_html_id(part.key) }}-collapse">
+    <ul class="mlb-sb-chapter list-unstyled fw-normal pb-1">
+      <li><a href="{{ pathto(part.index.key) }}" class="mlb-sb-chapter text-body d-flex text-decoration-none rounded">Introduction</a></li>
       {%- for chapter in part.children %}
-      {{ make_chapter_item(chapter) }}
+      {{ make_chapter_item(chapter, loop.index) }}
       {% endfor %}
     </ul>
   </div>
@@ -16,22 +29,44 @@
 {% endmacro %}
 
 
-{% macro make_chapter_item(chapter) %}
-<li class="mb-0">
-  <button class="ms-2 btn btn-toggle d-inline-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ chapter.id }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}" style="font-size: 11pt">
-    {{ chapter.title }}
-  </button>
-  <div class="collapse {{ 'show' if chapter.is_active(pagename) else '' }}" id="{{ chapter.id }}-collapse">
-    <ul class="btn-toggle-nav list-unstyled fw-normal pb-1 small">
-      <li><a href="{{ pathto(chapter.index_doc) }}" class="ms-5 link-body-emphasis d-inline-flex text-decoration-none rounded">Introduction</a></li>
+{% macro make_chapter_item(chapter, i) %}
+<li>
+  <div id="sb-btn-{{ key_to_html_id(chapter.key) }}" class="mlb-sb-btn-chapter btn d-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(chapter.key) }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}">
+
+    <!-- this is the "fold icon": an arrow that rotates 90 degrees when the part is collapsed -->
+    <!-- the rotation is controlled by mlbook-sidebar.js -->
+    <div class="align-items-end d-flex mlb-fold-icon-chapter">
+      <img class="mlb-fold-icon" id="sb-fold-icon-{{ key_to_html_id(chapter.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
+    </div>
+
+    <div class="text-start">
+      <span class="text-start text-uppercase fw-bold sb-chapter-prefix">
+        Chapter {{ i }}
+      </span>
+      <span>
+        {{ chapter.title }}
+      </span>
+    </div>
+
+  </div>
+  <div class="collapse {{ 'show' if chapter.is_active(pagename) else '' }}" id="{{ key_to_html_id(chapter.key) }}-collapse">
+    <ul class="mlb-sb-section list-unstyled fw-normal">
+      {{ make_section_item(chapter.index) }}
       {%- for section in chapter.children %}
-        <li><a href="{{ pathto(section.doc) }}" class="ms-5 link-body-emphasis d-inline-flex text-decoration-none rounded">{{ section.title }}</a></li>
+      {{ make_section_item(section) }}
       {% endfor %}
     </ul>
   </div>
 </li>
 {% endmacro %}
 
+
+{% macro make_section_item(section) %}
+{% set color = 'text-primary' if section.is_active(pagename) else 'text-body' %}
+<li>
+  <a href="{{ pathto(section.key) }}" class="mlb-sb-section {{ color }} d-inline-flex text-decoration-none rounded">{{ "Introduction" if section.is_index else section.title }}</a>
+</li>
+{% endmacro %}
 
 
 <a href="/" class="d-flex align-items-center pt-3 pb-4 mb-3 link-body-emphasis text-decoration-none border-bottom justify-content-center">
@@ -39,7 +74,35 @@
 </a>
 
 <ul class="list-unstyled ps-0">
-  {%- for part in parts %}
+  {%- for part in booktree %}
   {{ make_part_item(part) }}
   {% endfor %}
 </ul>
+
+{% if supplements %}
+<div class="border-top pt-3">
+  <ul class="list-unstyled">
+  {%- for supplement in supplements %}
+    <li class="sb-supplement">
+      <a class="rounded text-body" href="{{ pathto(supplement.key) }}">
+        {{ supplement.title }}
+      </a>
+    </li>
+  {% endfor %}
+  </ul>
+</div>
+{% endif %}
+
+<!-- make a toggle for dark mode -->
+<div class="d-flex justify-content-left mt-3 dark-mode-container">
+  <div class="form-check form-switch">
+    <input class="toggle-dark-mode form-check-input" type="checkbox">
+    <label class="form-check-label" for="dark-mode-toggle">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-moon-stars-fill" viewBox="0 0 16 16">
+        <path d="M6 .278a.77.77 0 0 1 .08.858 7.2 7.2 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277q.792-.001 1.533-.16a.79.79 0 0 1 .81.316.73.73 0 0 1-.031.893A8.35 8.35 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.75.75 0 0 1 6 .278"/>
+        <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.73 1.73 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.73 1.73 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.73 1.73 0 0 0 1.097-1.097zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.16 1.16 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.16 1.16 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732z"/>
+      </svg>
+    </label>
+  </div>
+</div>
+
