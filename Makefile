@@ -5,14 +5,14 @@
 # from the environment for the first two.
 SPHINXOPTS    ?=-T
 SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = content
+SOURCEDIR     = pages
 BUILDDIR      = _build
 
 # Put it first so that "make" without argument is like "make help".
 help:
 	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
 
-.PHONY: help Makefile view continuous
+.PHONY: help Makefile serve continuous
 
 serve:
 	live-server _build/html
