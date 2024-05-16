@@ -91,3 +91,12 @@ button.hamburger:hover {
   background-color: var(--bs-tertiary-bg);
 }
 
+
+div.highlight {
+  margin-left: 2em;
+}
+
+div.highlight pre {
+  /* adjust the interline spacing */
+  line-height: 1.4;
+}

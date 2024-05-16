@@ -22,3 +22,9 @@ A truly introductory machine learning textbook by
    04-appendix/index.rst
    glossary.rst
    acknowledgements.rst
+
+.. code:: python
+   
+    >>> import ml4p
+    >>> ml4p.learn_everything_about_ml()
+    Ok!
