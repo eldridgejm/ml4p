@@ -66,51 +66,55 @@
         </div>
 
 
-        <div class="d-lg-block d-none" style="margin-bottom: 3em; font-size: 11pt" class="text-truncate">
-          {%- if active_page is not none %}
+        <div class="d-lg-block d-none" style="margin-top: 3em; font-size: 11pt" class="text-truncate">
+          {% if active_page.is_part_index %}
+          <div class="text-uppercase fw-bold">
+            {{ active_page.parent.supertitle }}
+          </div>
+          {% endif %}
+
+          {% if active_page.is_chapter_index %}
+          <div class="text-uppercase fw-bold">
+            {{ active_page.parent.parent.supertitle }}
+            »
+            Chapter {{ active_page.parent.number }}
+          </div>
+          {% endif %}
+
           {% if active_page.is_section %}
-          {% set active_part = active_page.parent.parent %}
-          {% set active_chapter = active_page.parent %}
-          <a href="{{ pathto(active_part.key) }}">{{ active_part.supertitle }}: {{ active_part.title }}</a>
-          »
-          <a href="{{ pathto(active_chapter.key) }}">{{ active_chapter.title }}</a>
-          »
-          {{ active_page.title }}
-          {% endif %}
+          <div class="text-uppercase fw-bold">
+            {{ active_page.parent.parent.supertitle }}
+            »
+            Chapter {{ active_page.parent.number }}
+            »
+            Section {{ active_page.number }}
+          </div>
           {% endif %}
         </div>
 
-        {% if active_page.is_part_index %}
-        <div class="text-uppercase fw-bold">
-          {{ active_page.parent.supertitle }}
-        </div>
-        {% endif %}
-
-        {% if active_page.is_chapter_index %}
-        <div class="text-uppercase fw-bold">
-          {{ active_page.parent.parent.supertitle }}
-          »
-          Chapter {{ active_page.parent.number }}
-        </div>
-        {% endif %}
 
         {% block body %} {% endblock %}
 
+        <!-- previous and next page buttons -->
         <div class="d-flex justify-content-center prev-next mt-5 mb-5">
           <div class="d-inline-flex btn-group">
             {% if active_page.prev %}
-            <a class="prev-next btn border" href="{{ pathto(active_page.prev.key) }}">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-              </svg>
+            <a class="prev-next btn border d-inline-flex" href="{{ pathto(active_page.prev.key) }}">
+              <div class="align-items-center d-flex me-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
+                </svg>
+              </div>
               {{ active_page.prev.title }}
             </a>
             {% endif %}
             {% if active_page.next %}
-            <a class="prev-next btn border" href="{{ pathto(active_page.next.key) }}">{{ active_page.next.title }}
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-              </svg>
+            <a class="prev-next btn border d-inline-flex" href="{{ pathto(active_page.next.key) }}">{{ active_page.next.title }}
+              <div class="align-items-center d-flex ms-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                </svg>
+              </div>
             </a>
             {% endif %}
           </div>

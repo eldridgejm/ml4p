@@ -26,8 +26,9 @@ function configure_sketch(div_id, getTheme, opts) {
     p.draw = function () {
       p.clear();
       p.background(palette.bg());
-      p.fill(opts.color || "#6E66BA");
-      p.ellipse(x, p.height / 2, 50, 50);
+      p.fill(opts.color || palette.fg());
+      let radius = opts.radius || 50;
+      p.ellipse(x, p.height / 2, radius, radius);
       x = x + 1;
       if (x > p.width) {
         x = 0;

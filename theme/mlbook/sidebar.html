@@ -31,11 +31,11 @@
 
 {% macro make_chapter_item(chapter, i) %}
 <li>
-  <div id="sb-btn-{{ key_to_html_id(chapter.key) }}" class="mlb-sb-btn-chapter btn d-flex align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(chapter.key) }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}">
+  <div id="sb-btn-{{ key_to_html_id(chapter.key) }}" class="d-flex mlb-sb-btn-chapter btn align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(chapter.key) }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}">
 
     <!-- this is the "fold icon": an arrow that rotates 90 degrees when the part is collapsed -->
     <!-- the rotation is controlled by mlbook-sidebar.js -->
-    <div class="align-items-end d-flex mlb-fold-icon-chapter">
+    <div class="flex-shrink-0 align-items-end mlb-fold-icon-chapter">
       <img class="mlb-fold-icon" id="sb-fold-icon-{{ key_to_html_id(chapter.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
     </div>
 
@@ -64,7 +64,12 @@
 {% macro make_section_item(section) %}
 {% set color = 'text-primary' if section.is_active(pagename) else 'text-body' %}
 <li>
-  <a href="{{ pathto(section.key) }}" class="mlb-sb-section {{ color }} d-inline-flex text-decoration-none rounded">{{ "Introduction" if section.is_index else section.title }}</a>
+  <a href="{{ pathto(section.key) }}" class="mlb-sb-section {{ color }} d-inline-flex text-decoration-none rounded">
+    {% if section.number %}
+      <span class="mlb-section-prefix">§{{ section.number }}</span>
+    {% endif %}
+    {{ "Introduction" if section.is_index else section.title }}
+  </a>
 </li>
 {% endmacro %}
 

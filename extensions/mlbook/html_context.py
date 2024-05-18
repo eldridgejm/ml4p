@@ -37,6 +37,8 @@ class PageInfo:
         The next page in the book, if any.
     prev : Optional["PageInfo"]
         The previous page in the book, if any.
+    number: Optional[int]
+        The number of the page within its parent, if any.
 
     """
 
@@ -47,12 +49,14 @@ class PageInfo:
         parent: Optional[Union["ChapterInfo", "PartInfo"]],
         next: Optional["PageInfo"] = None,
         prev: Optional["PageInfo"] = None,
+        number: Optional[int] = None,
     ):
         self.title = title
         self.key = key
         self.parent = parent
         self.next = next
         self.prev = prev
+        self.number = number
 
     @property
     def is_index(self):
@@ -87,9 +91,9 @@ class PageInfo:
         return docname == self.key
 
     @classmethod
-    def from_app_env(cls, env, docname: str, parent):
+    def from_app_env(cls, env, docname: str, parent, number: Optional[int] = None):
         title = env.titles[docname].astext()
-        return cls(title, docname, parent)
+        return cls(title, docname, parent, number=number)
 
 
 class ChapterInfo:
@@ -121,8 +125,8 @@ class ChapterInfo:
 
         chapter = cls(title, number, index_docname, index, parent)
 
-        for docname in env.toctree_includes.get(index_docname, []):
-            page = PageInfo.from_app_env(env, docname, parent=chapter)
+        for i, docname in enumerate(env.toctree_includes.get(index_docname, [])):
+            page = PageInfo.from_app_env(env, docname, parent=chapter, number=i + 1)
             chapter.children.append(page)
 
         chapter.index.parent = chapter

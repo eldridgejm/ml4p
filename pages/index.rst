@@ -11,28 +11,6 @@
 A truly introductory machine learning textbook by
 `Justin Eldridge <http://eldridgejm.github.io>`_.
 
-.. raw:: html
-
-   <div id="foobar">
-   </div>
-
-   <script type="module">
-    import { setup_dynamic } from "/_static/vis/js/00-proof/main.js";
-
-    setup_dynamic("foobar");
-   </script>
-
-.. plot::
-   :scale: 50
-   :caption: testing
-
-    x = np.linspace(0, 10, 100)
-    y = x * np.sin(x)
-
-    plt.figure(figsize=(4, 2))
-    plt.plot(x, y)
-
-
 .. toctree::
    :maxdepth: 3
    :hidden:
@@ -44,9 +22,3 @@ A truly introductory machine learning textbook by
    04-appendix/index.rst
    glossary.rst
    acknowledgements.rst
-
-.. code:: python
-   
-    >>> import ml4p
-    >>> ml4p.learn_everything_about_ml()
-    Ok!

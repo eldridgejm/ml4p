@@ -18,6 +18,11 @@ main {
 
 a.prev-next {
   font-size: 11pt;
+  color: var(--bs-body-color);
+}
+
+a.prev-next:visited {
+  color: var(--bs-body-color);
 }
 
 a.prev-next:hover {
@@ -69,16 +74,16 @@ button.exercise-show-answer-button:hover {
   background-color: var(--bs-tertiary-bg);
 }
 
+a:visited {
+  color: var(--bs-link-color);
+}
+
 a.headerlink {
   visibility: hidden;
   text-decoration: none;
   font-size: 1em;
   padding-left: .25em;
   margin-bottom: .5em;
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: "Arial Rounded MT Bold", "Nunito", sans-serif;
 }
 
 h1:hover .headerlink,

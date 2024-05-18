@@ -9,8 +9,8 @@ div.mlb-fold-icon-part {
 }
 
 div.mlb-fold-icon-chapter {
-  padding-bottom: 0pt;
-  padding-right: 3pt;
+  padding-bottom: 0rem;
+  padding-right: .3rem;
 }
 
 div.mlb-sb-btn-part:hover {
@@ -57,6 +57,11 @@ a.mlb-sb-section {
 
 a.mlb-sb-section:hover {
   background-color: var(--bs-tertiary-bg);
+}
+
+span.mlb-section-prefix {
+  color: var(--bs-tertiary-color);
+  margin-right: .5em;
 }
 
 li.sb-supplement {

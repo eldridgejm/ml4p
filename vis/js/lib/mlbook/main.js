@@ -5,7 +5,7 @@ let light_theme = {
 
 let dark_theme = {
   fg: "#ffffff",
-  bg: "#000000"
+  bg: "#212529"
 }
 
 export class Palette {

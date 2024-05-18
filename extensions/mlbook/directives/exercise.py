@@ -1,7 +1,7 @@
 """Provides a directive for exercise questions."""
 import uuid
 
-from docutils.parsers.rst import Directive, directives
+from docutils.parsers.rst import Directive
 from docutils import nodes
 
 class ExerciseNode(nodes.General, nodes.Element):
