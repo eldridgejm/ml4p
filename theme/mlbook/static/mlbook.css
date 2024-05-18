@@ -77,6 +77,10 @@ a.headerlink {
   margin-bottom: .5em;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Arial Rounded MT Bold", "Nunito", sans-serif;
+}
+
 h1:hover .headerlink,
 h2:hover .headerlink,
 h3:hover .headerlink,

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Preview</title>
+    <script src="/lib/p5/p5.min.js"></script>
+    <script>
+      let FIGTHEME = "light";
+      let getFigTheme = ( ) => { return FIGTHEME; };
+      let FIGOPTS = $figure_options;
+    </script>
+  </head>
+  <body>
+    <h1>Preview</h1>
+
+    <script type="module">
+      import { setup_$static_or_dynamic } from "/$figure_directory_name/main.js";
+
+      setup_$static_or_dynamic(
+        "preview",
+        getFigTheme,
+        FIGOPTS,
+      );
+    </script>
+
+    <div id="preview"></div>
+
+  </body>
+</html>

@@ -3,6 +3,8 @@
 
 .direnv
 _build
+node_modules
+.DS_Store
 
 ### Python ###
 # Byte-compiled / optimized / DLL files

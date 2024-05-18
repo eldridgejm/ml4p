@@ -8,9 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     button.addEventListener("click", function () {
       // find the corresponding fold icon. this is an image with id starting with
       // sb-fold-icon; the rest is the same as the button id
-      let foldIcon = document.getElementById(
-        "sb-fold-icon" + button.id.slice(6),
-      );
+      let foldIcon = button.querySelector('[id^="sb-fold-icon"]');
 
       let angle = button.getAttribute("aria-expanded") === "true" ? 90 : 0;
 

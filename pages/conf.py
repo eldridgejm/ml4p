@@ -18,7 +18,10 @@ import sys
 
 sys.path.append(str(pathlib.Path(__file__).parent.parent / 'extensions'))
 
-extensions = ['mlbook', 'sphinx.ext.mathjax']
+extensions = ['mlbook', 'sphinx.ext.mathjax', 'matplotlib.sphinxext.plot_directive']
+
+plot_formats = [("png", 300)]
+plot_rcparams = {'savefig.transparent': True}
 
 templates_path = ["_templates"]
 exclude_patterns = []

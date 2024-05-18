@@ -8,19 +8,20 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = pages
 BUILDDIR      = _build
 
-# Put it first so that "make" without argument is like "make help".
-help:
-	@$(SPHINXBUILD) -M help "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-
-.PHONY: help Makefile serve continuous
-
+.PHONY: serve
 serve:
 	live-server _build/html
 
+.PHONY: continuous
 continuous:
 	fd . | entr fish -c 'make html'
 
-# Catch-all target: route all unknown targets to Sphinx using the new
-# "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
-%: Makefile
-	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+.PHONY: html
+html:
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
+	mkdir -p $(BUILDDIR)/html/_static/vis
+	cp -r vis/js $(BUILDDIR)/html/_static/vis/js
+
+.PHONY: clean
+clean:
+	rm -rf $(BUILDDIR)/*
