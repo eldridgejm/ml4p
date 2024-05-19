@@ -44,7 +44,7 @@ def visit_jsfigure_node(self, node):
       );
     </script>
 
-    <div id="$div_id"></div>
+    <div class="mlb-figure align-items-center text-center d-flex-inline" id="$div_id"></div>
     """)
 
     html = html_template.substitute(

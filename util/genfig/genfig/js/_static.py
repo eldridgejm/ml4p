@@ -15,7 +15,7 @@ from PIL import Image
 
 from ._preview import make_preview
 
-PORT = 5026
+PORT = 5028
 
 
 def _start_webserver(directory: pathlib.Path):
@@ -32,7 +32,7 @@ def _take_browser_screenshot(
     figure_directory: pathlib.Path, theme: str = "light"
 ) -> Image.Image:
     options = Options()
-    options.add_argument("--headless")  # Ensure GUI is off
+    # options.add_argument("--headless")  # Ensure GUI is off
     options.add_argument("--no-sandbox")
 
     # Include the path to your ChromeDriver if necessary
@@ -40,7 +40,7 @@ def _take_browser_screenshot(
 
     # open the file
     driver.get(
-        f"http://127.0.0.1:{PORT}/{figure_directory.name}/_build/preview-static.html"
+        f"http://127.0.0.1:{PORT}/figures/{figure_directory.name}/_build/preview-static.html"
     )
 
     # run some JavaScript to set the theme
@@ -101,7 +101,7 @@ def generate_static(
     figbasename = _make_figure_basename(figure_options)
 
     make_preview(figure_directory, dynamic=False, figure_options=figure_options)
-    process = _start_webserver(figure_directory.parent)
+    process = _start_webserver(figure_directory.parent.parent)
     img_light = _take_browser_screenshot(figure_directory, theme="light")
     img_dark = _take_browser_screenshot(figure_directory, theme="dark")
     _stop_webserver(process)

@@ -31,6 +31,9 @@ For this, it's useful to remember a few rules of matrix calculus:
    element of this matrix is the derivative of the scalar with respect to the
    :math:`i,j`-th element of the matrix.
 
+
+.. jsfig:: 1d-risk
+
 Using these rules, we can compute the gradient of the empirical risk with respect
 to :math:`\vec w`:
 
@@ -55,6 +58,8 @@ and the fact that :math:`||A||^2 = A^T A`:
 
     = \frac{2}{n} X^T (X \vec w - \vec y)
 
+
+.. jsfig:: 1d-risk
 
 Here is a second level heading
 ------------------------------

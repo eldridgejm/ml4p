@@ -109,3 +109,7 @@ div.highlight pre {
   /* adjust the interline spacing */
   line-height: 1.4;
 }
+
+div.mlb-figure {
+  margin: 3em 3em;
+}
