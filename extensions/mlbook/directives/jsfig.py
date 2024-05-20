@@ -30,8 +30,8 @@ class JSFigureDirective(Directive):
 
 def visit_jsfigure_node(self, node):
     html_template = Template("""
-    <script type="module">
-      import { setup_dynamic } from "/_static/vis/js/$figure_name/main.js";
+    <script defer type="module">
+      import { setup_dynamic } from "/_static/vis/js/figures/$figure_name/main.js";
 
       function getTheme() {
         return document.body.getAttribute("data-bs-theme");
@@ -44,7 +44,7 @@ def visit_jsfigure_node(self, node):
       );
     </script>
 
-    <div class="mlb-figure align-items-center text-center d-flex-inline" id="$div_id"></div>
+    <div class="mlb-figure align-items-center text-start d-flex-inline" id="$div_id"></div>
     """)
 
     html = html_template.substitute(

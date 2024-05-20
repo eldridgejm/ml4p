@@ -268,7 +268,7 @@ export class Plot {
     }
   }
 
-  _draw_arrowhead(x, y, angle, { width = 10, length = 10 } = {}) {
+  _draw_arrowhead(x, y, angle, { width = 10, length = 5 } = {}) {
     // it will be easier to work in canvas coordinates and then convert
     // to plot coordinates; this ensures that the arrowhead will always
     // be the same size regardless of the scale of the plot
@@ -310,7 +310,7 @@ export class Plot {
     end_arrow = true,
     y = 0,
     arrow_width = 5,
-    arrow_length = 10,
+    arrow_length = 7,
   } = {}) {
     this.draw_line(range[0], y, range[1], y);
 
@@ -334,7 +334,7 @@ export class Plot {
     end_arrow = true,
     x = 0,
     arrow_width = 5,
-    arrow_length = 10,
+    arrow_length = 7,
   } = {}) {
     range = range || this.y_range;
     this.draw_line(x, range[0], x, range[1]);
@@ -359,6 +359,7 @@ export class Plot {
     length = 8,
     interval = [this.x_range[0], this.x_range[1]],
     labels = "below",
+    y_shift = 5,
     no_label_near = null,
     tickStyler = (x) => {
       this.p.strokeWeight(1);
@@ -399,11 +400,11 @@ export class Plot {
         if (labels == "below") {
           labelStyler(x);
           this.p.textAlign(this.p.CENTER, this.p.TOP);
-          this.p.text(labelFormatter(x), this.cx(x), this.cy(y) + 5);
+          this.p.text(labelFormatter(x), this.cx(x), this.cy(y) + y_shift);
         } else if (labels == "above") {
           labelStyler(x);
           this.p.textAlign(this.p.CENTER, this.p.BOTTOM);
-          this.p.text(labelFormatter(x), this.cx(x), this.cy(y) - 5);
+          this.p.text(labelFormatter(x), this.cx(x), this.cy(y) - y_shift);
         }
       }
 

@@ -7,12 +7,14 @@ function configure_sketch(div_id, getTheme, opts = {}) {
     draw_x_ticks: true,
     x_tick_spacing: null,
     x_tick_formatter: (x) => x.toFixed(2),
-    draw_horizontal_error_bars: true,
+    draw_horizontal_error_bars: false,
     draw_vertical_error_bars: false,
+    draw_hypothesis: false,
     animation: null,
     draw_risk: true,
     risk_style: null,
-    draw_data_labels: true,
+    risk_id: null,
+    draw_data_labels: false,
     loss: "absolute",
   };
 
@@ -117,7 +119,7 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       plot.draw_x_axis({ start_arrow: x_start_arrow });
 
       if (opts.draw_risk || opts.draw_vertical_error_bars) {
-        plot.draw_y_axis({ range: [0, 1], start_arrow: false });
+        plot.draw_y_axis({ range: [0, .95], start_arrow: false });
       }
 
       if (opts.draw_x_ticks) {
@@ -126,16 +128,24 @@ function configure_sketch(div_id, getTheme, opts = {}) {
         plot.draw_xticks({
           spacing: opts.x_tick_spacing,
           labelFormatter: opts.x_tick_formatter,
+          y_shift: 8,
         });
       }
     }
 
     function _draw_data() {
-      // draw the data
-      p.fill(palette.c0());
-      p.stroke(palette.fg());
-      p.strokeWeight(2);
       let zeros = data.map((_, i) => 0);
+
+      // draw a "halo" around the data points
+      p.fill(palette.bg());
+      p.stroke(palette.bg());
+      plot.scatter(data, zeros, { radius: 20 });
+
+      // draw the data points themselves
+      let factor = getTheme() === "light" ? 1 : -1;
+      p.fill(palette.c0(factor * 0.5));
+      p.stroke(palette.c0());
+      p.strokeWeight(2);
       plot.scatter(data, zeros, { radius: 12 });
     }
 
@@ -280,7 +290,10 @@ function configure_sketch(div_id, getTheme, opts = {}) {
         this.style = animation_opts.style || "once";
         this.start_h = animation_opts.start_h || opts.x_range[0];
         this.end_h = animation_opts.end_h || opts.x_range[1];
-        this.show_buttons = animation_opts.show_buttons || true;
+        this.show_buttons =
+          animation_opts.show_buttons === undefined
+            ? true
+            : animation_opts.show_buttons;
 
         this.running = animation_opts.start_running || true;
         this.direction = 1;
@@ -298,11 +311,13 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       }
 
       setup() {
-        this.button = p
-          .createButton(this.running ? this.stop_button : this.start_button)
-          .mousePressed(this._setup_button.bind(this));
+        if (this.show_buttons) {
+          this.button = p
+            .createButton(this.running ? this.stop_button : this.start_button)
+            .mousePressed(this._setup_button.bind(this));
 
-        this.button.class("btn btn-primary");
+          this.button.class("btn btn-primary");
+        }
       }
 
       draw() {
@@ -350,6 +365,51 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       }
     }
 
+    class DataAnimation {
+      constructor(animation_opts) {
+        if (animation_opts.data === undefined) {
+          throw new Error("data animation requires a data array");
+        }
+
+        this.start_data = data.slice();
+        this.end_data = animation_opts.data;
+        this.speed_factor = animation_opts.speed_factor || 1;
+
+        this.time = 0;
+        this.direction = 1;
+        this.pause = animation_opts.pause || 0;
+      }
+
+      sigmoidEasing(t) {
+        return 1 / (1 + Math.exp(-12 * (t - 0.5)));
+      }
+
+      interpolateData() {
+        let current_data = [];
+        for (let i = 0; i < data.length; i++) {
+          let factor = this.sigmoidEasing(this.time);
+          current_data.push(
+            this.start_data[i] * (1 - factor) + this.end_data[i] * factor,
+          );
+        }
+        return current_data;
+      }
+
+      setup() {}
+
+      draw() {
+        data = this.interpolateData();
+        this.time += this.direction * 0.01 * this.speed_factor;
+        if (this.time >= 1 + this.pause) {
+          this.time = 1;
+          this.direction = -1;
+        } else if (this.time <= 0 - this.pause) {
+          this.time = 0;
+          this.direction = 1;
+        }
+      }
+    }
+
     class NullAnimation {
       setup() {}
 
@@ -362,6 +422,8 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       let [animation_name, animation_opts] = opts.animation;
       if (animation_name === "sweep_hypothesis") {
         opts.animation = new AnimateHypothesis(animation_opts);
+      } else if (animation_name === "data") {
+        opts.animation = new DataAnimation(animation_opts);
       }
     }
 
@@ -397,24 +459,32 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       opts.animation.setup();
     };
 
-    // draw function
     p.draw = function () {
       p.clear();
       p.background(palette.bg());
 
       if (opts.draw_horizontal_error_bars) _draw_horizontal_error_bars();
 
-      _draw_hypothesis();
+      if (opts.draw_hypothesis) _draw_hypothesis();
 
       if (opts.draw_vertical_error_bars) _draw_vertical_error_bars();
 
-      if (opts.draw_risk) _draw_risk();
-
       _draw_axes();
+
       _draw_data();
+
+      if (opts.draw_risk) _draw_risk();
 
       if (opts.draw_data_labels) {
         _draw_data_labels();
+      }
+
+      if (opts.risk_id !== null) {
+        // update the span with the current risk
+        let risk_span = p.select("#" + opts.risk_id);
+        if (risk_span) {
+          risk_span.html(risk(h).toFixed(2));
+        }
       }
 
       opts.animation.draw();
@@ -442,16 +512,12 @@ function configure_sketch(div_id, getTheme, opts = {}) {
 }
 
 export function setup_dynamic(div_id, getTheme, opts) {
-  opts.data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  opts.data = [1, 2, 3];
+  opts.data = [3, 4, 5];
   opts.animation = [
-    "sweep_hypothesis",
-    {
-      start_h: 1,
-      end_h: 3,
-    },
+    "data",
+    { data: [1, 4, 5], speed_factor: 0.75, pause: 0.5 },
   ];
-  opts.risk_style = "as-you-go";
+  opts.loss = "square";
   let sketch = configure_sketch(div_id, getTheme, opts);
   new p5(sketch, div_id);
 }

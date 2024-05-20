@@ -26,15 +26,15 @@ A truly introductory machine learning textbook by
 .. jsfig:: 1d-risk
 
    {
-      data: [.1, .2, .3, .35, .37, .41, .5, .7],
-      w_0: .2,
-      allow_optimization: true
+      draw_data_labels: false,
+      loss: "square",
+      draw_x_ticks: false,
+      risk_style: "as-you-go",
+      animation: [
+        "sweep_hypothesis",
+        {
+          style: "back-and-forth",
+          show_buttons: false
+        }
+      ],
    }
-
-Try moving the triangle representing :math:`h` in the figure below.
-
-.. jsfig:: 1d-risk
-
-.. jsfig:: 1d-risk
-
-   { w_0: 3 }

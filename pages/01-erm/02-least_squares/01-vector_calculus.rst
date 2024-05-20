@@ -83,6 +83,12 @@ And this is more text.
      
         f(x) = 42
 
+   .. jsfig:: 1d-risk
+
+       {
+          draw_data_labels: false
+       }
+
 
 .. note::
 
@@ -106,4 +112,3 @@ and the fact that :math:`||A||^2 = A^T A`:
 
 Here is more content
 --------------------
-
