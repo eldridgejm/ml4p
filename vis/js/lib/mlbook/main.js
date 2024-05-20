@@ -44,6 +44,8 @@ let common_colors = {
   green: "#198754",
   teal: "#20c997",
   cyan: "#0dcaf0",
+  white: "#ffffff",
+  black: "#000000",
 };
 
 let semantic_colors = {
@@ -260,9 +262,9 @@ export class Plot {
    * @param {array} x_arr - An array of x values.
    * @param {array} y_arr - An array of y values.
    */
-  scatter(x_arr, y_arr) {
+  scatter(x_arr, y_arr, { radius = 10 } = {}) {
     for (let i = 0; i < x_arr.length; i++) {
-      this.draw_point(x_arr[i], y_arr[i]);
+      this.draw_point(x_arr[i], y_arr[i], { radius: radius });
     }
   }
 
@@ -338,13 +340,13 @@ export class Plot {
     this.draw_line(x, range[0], x, range[1]);
 
     if (end_arrow) {
-      this._draw_arrowhead(x, this.y_range[1], Math.PI / 2, {
+      this._draw_arrowhead(x, range[1], Math.PI / 2, {
         width: arrow_width,
         length: arrow_length,
       });
     }
     if (start_arrow) {
-      this._draw_arrowhead(x, this.y_range[0], -Math.PI / 2, {
+      this._draw_arrowhead(x, range[0], -Math.PI / 2, {
         width: arrow_width,
         length: arrow_length,
       });

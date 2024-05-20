@@ -1,7 +1,6 @@
 #! /usr/bin/env python3
 
 import argparse
-import pathlib
 import shutil
 
 parser = argparse.ArgumentParser()
@@ -10,6 +9,6 @@ parser.add_argument("name")
 args = parser.parse_args()
 
 shutil.copytree(
-    "template",
-    "figures/" + args.name,
+    "../template",
+    args.name,
 )

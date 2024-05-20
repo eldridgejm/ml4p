@@ -1,356 +1,400 @@
-/*
-  Demonstrates the concept of risk with a data set of scalars.
+import { Palette, Plot, PlotTeX, linspace } from "../../lib/mlbook/main.js";
 
-  Options
-  -------
+function configure_sketch(div_id, getTheme, opts = {}) {
+  const defaults = {
+    h: null,
+    h_selectable: true,
+    draw_x_ticks: true,
+    x_tick_spacing: null,
+    x_tick_formatter: (x) => x.toFixed(2),
+    draw_horizontal_error_bars: true,
+    draw_vertical_error_bars: false,
+    animation: null,
+    draw_risk: true,
+    risk_style: null,
+    draw_data_labels: true,
+    loss: "absolute",
+  };
 
-  - data: an array of scalars
-      The data set to visualize. If not provided, a default list of 5 numbers is used.
-  - x_min, x_max: scalars
-      The left and right bounds of the x-axis. If not provided, the minimum and
-      maximum of the data set are used (with 10% of the range added as buffers).
+  opts = Object.assign({}, defaults, opts);
 
-*/
-
-import { Palette } from "../lib/mlbook/main.js";
-
-class Plot {
-  constructor(p, palette, data, hypothesis, size, top_left, x_range, y_range) {
-    this.p = p;
-    this.palette = palette;
-    this.data = data;
-    this.hypothesis = hypothesis;
-    this.size = size;
-    this.top_left = top_left;
-    this.x_range = x_range;
-    this.y_range = y_range;
-
-    this.h_is_being_dragged = false;
-  }
-
-  cx(x) {
-    // converts plot coordinates to canvas coordinates
-    return (
-      this.top_left[0] +
-      ((x - this.x_range[0]) / (this.x_range[1] - this.x_range[0])) *
-        this.size[0]
-    );
-  }
-
-  cy(y) {
-    // converts plot coordinates to canvas coordinates
-    // "flips" the y-axis, so that positive y is up
-    return (
-      this.top_left[1] +
-      (1 - (y - this.y_range[0]) / (this.y_range[1] - this.y_range[0])) *
-        this.size[1]
-    );
-  }
-
-  px(x) {
-    // converts canvas coordinates to plot coordinates
-    return (
-      this.x_range[0] +
-      ((x - this.top_left[0]) / this.size[0]) *
-        (this.x_range[1] - this.x_range[0])
-    );
-  }
-
-  py(y) {
-    // converts canvas coordinates to plot coordinates
-    return (
-      this.y_range[0] +
-      ((y - this.top_left[1]) / this.size[1]) *
-        (this.y_range[1] - this.y_range[0])
-    );
-  }
-
-  sx(x) {
-    // converts plot coordinates to screen coordinates
-    return this.cx(x) + this.top_left[0];
-  }
-
-  sy(y) {
-    // converts plot coordinates to screen coordinates
-    return this.cy(y) + this.top_left[1];
-  }
-
-  draw_axes() {
-    // use rounded caps for the lines
-    this.p.strokeCap(this.p.ROUND);
-
-    // draw x axis
-    this.p.line(
-      this.cx(this.x_range[0]),
-      this.cy(0),
-      this.cx(this.x_range[1]),
-      this.cy(0),
-    );
-
-    let arrow_width = 5;
-    let arrow_height = 5;
-
-    // draw arrowheads at the ends of the x-axis
-    this.p.line(
-      this.cx(this.x_range[1]) - 5,
-      this.cy(0) + arrow_height,
-      this.cx(this.x_range[1]),
-      this.cy(0),
-    );
-
-    this.p.line(
-      this.cx(this.x_range[1]) - 5,
-      this.cy(0) - arrow_height,
-      this.cx(this.x_range[1]),
-      this.cy(0),
-    );
-
-    this.p.line(
-      this.cx(this.x_range[0]) + arrow_width,
-      this.cy(0) + arrow_height,
-      this.cx(this.x_range[0]),
-      this.cy(0),
-    );
-
-    this.p.line(
-      this.cx(this.x_range[0]) + arrow_width,
-      this.cy(0) - arrow_height,
-      this.cx(this.x_range[0]),
-      this.cy(0),
-    );
-  }
-
-  draw_xticks(spacing = 1, opts) {
-    let x = this.x_range[0] + spacing;
-    while (x < this.x_range[1]) {
-      this.p.strokeWeight(1);
-      this.p.line(this.cx(x), this.cy(0) - 5, this.cx(x), this.cy(0) + 5);
-
-      this.p.strokeWeight(0);
-      if (opts.labels) {
-        this.p.textAlign(this.p.CENTER, this.p.TOP);
-        this.p.text(x, this.cx(x), this.cy(-.02));
-      }
-      x += spacing;
-    }
-  }
-
-  draw_data(radius = 15) {
-    for (let x of this.data) {
-      this.p.circle(this.cx(x), this.cy(0), radius);
-    }
-  }
-
-  draw_hypothesis() {
-    // draws a diamond marker for the hypothesis
-    this.p.strokeWeight(2);
-
-    if (this._is_mouse_near_hypothesis_marker() || this.h_is_being_dragged) {
-      this.p.fill(this.p.color(this.palette.fg()));
-    } else {
-      this.p.fill(this.p.color(this.palette.bg()));
-    }
-
-    let y_shift = -0.2;
-    let width = 12;
-
-    this.p.beginShape();
-    this.p.vertex(this.cx(this.hypothesis), this.cy(y_shift + 0.1));
-    this.p.vertex(this.cx(this.hypothesis) + width, this.cy(y_shift));
-    this.p.vertex(this.cx(this.hypothesis) - width, this.cy(y_shift));
-    this.p.vertex(this.cx(this.hypothesis), this.cy(y_shift + 0.1));
-    this.p.endShape();
-
-    this.p.textAlign(this.p.CENTER, this.p.CENTER);
-    this.p.strokeWeight(0);
-
-    if (this._is_mouse_near_hypothesis_marker() || this.h_is_being_dragged) {
-      this.p.fill(this.p.color(this.palette.bg()));
-    } else {
-      this.p.fill(this.p.color(this.palette.fg()));
-    }
-
-    // draw a solid line from the hypothesis to the x-axis
-    this.p.strokeWeight(2);
-    this.p.stroke(this.palette.fg());
-    this.p.line(
-      this.cx(this.hypothesis),
-      this.cy(-0.1),
-      this.cx(this.hypothesis),
-      this.cy(0),
-    );
-
-    this.p.noStroke();
-    this.p.text("h", this.cx(this.hypothesis), this.cy(-0.165));
-  }
-
-  draw_errors(opts) {
-    opts = opts || {};
-    opts.labels = opts.labels || false;
-
-    // draw an "error bar" for each data point
-    // the error bar is a line from the data point to the hypothesis
-    // sort the data by their distance to the hypothesis
-    this.p.strokeWeight(2);
-    this.p.stroke(this.p.color(this.palette.danger()));
-
-    let err_y = -0.25;
-    for (let [index, x] of this.data.entries()) {
-      this.p.drawingContext.setLineDash([]);
-      this.p.strokeWeight(3);
-      this.p.stroke(this.palette.danger_emphasis());
-      this.p.line(
-        this.cx(x),
-        this.cy(err_y),
-        this.cx(this.hypothesis),
-        this.cy(err_y),
-      );
-
-      // draw a dashed line from the data point down to the error bar
-      this.p.drawingContext.setLineDash([5, 5]);
-      this.p.strokeWeight(1);
-      this.p.stroke(this.palette.fg());
-      this.p.line(this.cx(x), this.cy(0), this.cx(x), this.cy(err_y));
-
-      err_y -= 0.04;
-    }
-
-    // draw a dashed line from the hypothesis down
-    this.p.strokeWeight(2);
-    this.p.drawingContext.setLineDash([5, 5]);
-    this.p.stroke(this.palette.fg());
-    this.p.line(
-      this.cx(this.hypothesis),
-      this.cy(-0.2),
-      this.cx(this.hypothesis),
-      this.cy(err_y),
-    );
-
-    this.p.drawingContext.setLineDash([]);
-  }
-
-  draw_vertical_errors() {
-    // draw a vertical line upwards from the hypothesis to the total error
-    let total_error = 0;
-    for (let x of this.data) {
-      total_error += Math.abs(this.hypothesis - x);
-    }
-
-    let top = 0;
-    for (let x of this.data) {
-      let error = Math.abs(this.hypothesis - x) * 0.004;
-      this.p.strokeWeight(3);
-      this.p.stroke(this.p.color(this.palette.danger_emphasis()));
-      this.p.line(
-        this.cx(this.hypothesis),
-        this.cy(top),
-        this.cx(this.hypothesis),
-        this.cy(top + error) + 5,
-      );
-      top += error;
-    }
-  }
-
-  draw_risk() {
-    // draw the risk as line plot
-    function risk(h) {
-      let total_error = 0;
-      for (let x of this.data) {
-        total_error += Math.abs(h - x);
-      }
-      return total_error;
-    }
-
-    let step = 0.1;
-    let x = this.x_range[0];
-
-    this.p.strokeWeight(3);
-    this.p.stroke(this.palette.danger());
-
-    while (x < this.x_range[1]) {
-      let y = risk.call(this, x);
-      this.p.point(this.cx(x), this.cy(y * 0.004) + 5);
-      x += step;
-    }
-  }
-
-  _is_mouse_near_hypothesis_marker() {
-    let mouse = [this.p.mouseX, this.p.mouseY];
-    let hypothesis_marker = [this.cx(this.hypothesis), this.cy(0) + 40];
-    return (
-      this.p.dist(
-        mouse[0],
-        mouse[1],
-        hypothesis_marker[0],
-        hypothesis_marker[1],
-      ) < 15
-    );
-  }
-
-  drag() {
-    if (this.h_is_being_dragged) {
-      this.hypothesis = this.px(this.p.mouseX);
-
-      // clip the hypothesis to the x-axis
-      if (this.hypothesis < this.x_range[0]) {
-        this.hypothesis = this.x_range[0];
-      }
-
-      if (this.hypothesis > this.x_range[1]) {
-        this.hypothesis = this.x_range[1];
-      }
-    }
-  }
-}
-
-function configure_sketch(div_id, getTheme, opts) {
+  // if there's no data specified...
   if (opts.data === undefined) {
-    opts.data = [35, 42, 55, 63, 82];
-    opts.x_min = 0;
-    opts.x_max = 90;
+    opts.data = [31, 42, 55, 75];
+    opts.x_range = [0, 80];
+    opts.x_tick_spacing = 10;
+    opts.x_tick_formatter = (x) => x.toFixed(0);
+    opts.h = 40;
   }
 
-  if (opts.x_min === undefined || opts.x_max === undefined) {
-    let range = Math.max(...opts.data) - Math.min(...opts.data);
-    opts.x_min = Math.min(...opts.data) - 0.1 * range;
-    opts.x_max = Math.max(...opts.data) + 0.1 * range;
+  // if data was specified, but no x_range was specified...
+  if (opts.x_range === undefined) {
+    let max = Math.max(...opts.data);
+    opts.x_range = [0, max * 1.1];
+    opts.x_tick_spacing = max / 10;
   }
 
-  opts.w_0 = opts.w_0 || (opts.x_min + opts.x_max) / 2;
+  // if no initial hypothesis was specified...
+  if (opts.h === null) {
+    opts.h = (opts.x_range[0] + opts.x_range[1]) / 2;
+  }
 
+  // if no x_tick_spacing was specified...
+  opts.x_tick_spacing =
+    opts.x_tick_spacing || (opts.x_range[1] - opts.x_range[0]) / 10;
+
+  // "global" variables
+  let h = opts.h;
   let palette = new Palette(getTheme);
+  let plot;
+  let plot_tex;
+  let h_selected = false;
+  let data = opts.data;
 
-  let point_tex = [];
+  // "global" settings
+
+  // vertical position of the first error bar below the x-axis, in pixels
+  let HORIZONTAL_ERROR_BAR_Y_OFFSET_PIXELS = 30;
+
+  // vertical spacing between the horizontal error bars, in pixels
+  let HORIZONTAL_ERROR_BAR_SPACING_PIXELS = 10;
+
+  // how far below the x-axis should the tip of the triangle be? depends
+  // on the number of data points
+  let HYPOTHESIS_Y_OFFSET_PIXELS;
+  if (opts.draw_horizontal_error_bars) {
+    HYPOTHESIS_Y_OFFSET_PIXELS =
+      HORIZONTAL_ERROR_BAR_Y_OFFSET_PIXELS +
+      data.length * HORIZONTAL_ERROR_BAR_SPACING_PIXELS;
+  } else {
+    HYPOTHESIS_Y_OFFSET_PIXELS = 30;
+  }
+
+  let HYPOTHESIS_HEIGHT_PIXELS = 20;
+
+  // helper functions
+  // ================
+
+  function getLossFunction() {
+    if (opts.loss === "absolute") {
+      return (x, h) => Math.abs(x - h);
+    } else if (opts.loss === "square") {
+      return (x, h) => Math.pow(x - h, 2);
+    }
+  }
+
+  function totalLoss(h) {
+    let loss = getLossFunction();
+    let total = 0;
+    for (let xi of data) {
+      total += loss(xi, h);
+    }
+    return total;
+  }
+
+  function maxLoss() {
+    let hs = linspace(opts.x_range[0], opts.x_range[1], 100);
+    let losses = hs.map((h) => totalLoss(h));
+    return Math.max(...losses);
+  }
+
+  function risk(h) {
+    return totalLoss(h) / data.length;
+  }
+
+  // p5.js sketch
+  // ============
 
   function sketch(p) {
-    let plot;
+    // drawing functions
+    // -----------------
 
-    function canvasSize() {
-      return [Math.min(0.95 * p.windowWidth, 500), 400];
+    function _draw_axes() {
+      // draw a number line
+      p.strokeWeight(2);
+      p.stroke(palette.fg());
+      let x_start_arrow = !(opts.draw_risk || opts.draw_vertical_error_bars);
+      plot.draw_x_axis({ start_arrow: x_start_arrow });
+
+      if (opts.draw_risk || opts.draw_vertical_error_bars) {
+        plot.draw_y_axis({ range: [0, 1], start_arrow: false });
+      }
+
+      if (opts.draw_x_ticks) {
+        // draw ticks
+        p.fill(palette.fg());
+        plot.draw_xticks({
+          spacing: opts.x_tick_spacing,
+          labelFormatter: opts.x_tick_formatter,
+        });
+      }
+    }
+
+    function _draw_data() {
+      // draw the data
+      p.fill(palette.c0());
+      p.stroke(palette.fg());
+      p.strokeWeight(2);
+      let zeros = data.map((_, i) => 0);
+      plot.scatter(data, zeros, { radius: 12 });
+    }
+
+    function _draw_hypothesis() {
+      let width = 20 / plot.x_scale();
+      let height = HYPOTHESIS_HEIGHT_PIXELS / plot.y_scale();
+
+      let y = plot.py(plot.cy(0) + HYPOTHESIS_Y_OFFSET_PIXELS);
+
+      // draw a line from the x-axis to the hypothesis
+      p.stroke(palette.fg());
+      p.strokeWeight(2);
+      plot.draw_line(h, 0, h, y);
+
+      let mouse_over = _is_mouse_over_hypothesis() && opts.h_selectable;
+
+      // draw a triangle with p5
+      if (mouse_over || h_selected) {
+        p.fill(palette.fg());
+      } else {
+        p.fill(palette.bg());
+      }
+      p.triangle(
+        plot.cx(h),
+        plot.cy(y),
+        plot.cx(h - width / 2),
+        plot.cy(y - height),
+        plot.cx(h + width / 2),
+        plot.cy(y - height),
+      );
+
+      // write an "h" on the triangle
+      if (mouse_over || h_selected) {
+        p.fill(palette.bg());
+      } else {
+        p.fill(palette.fg());
+      }
+      p.textSize(11);
+      p.noStroke();
+      p.textAlign(p.CENTER, p.CENTER);
+      p.text("h", plot.cx(h), plot.cy(y) + HYPOTHESIS_HEIGHT_PIXELS / 2 + 4);
+    }
+
+    function _is_mouse_over_hypothesis() {
+      let x = p.mouseX;
+      let y = p.mouseY;
+
+      let hx = plot.cx(h);
+      let hy = plot.cy(0) + HYPOTHESIS_Y_OFFSET_PIXELS + 10;
+
+      // compute distance from mouse to hypothesis
+      let d = p.dist(x, y, hx, hy);
+      return d < 13;
+    }
+
+    function _draw_horizontal_error_bars() {
+      let spacing = HORIZONTAL_ERROR_BAR_SPACING_PIXELS / plot.y_scale();
+      let y_init = plot.py(plot.cy(0) + HORIZONTAL_ERROR_BAR_Y_OFFSET_PIXELS);
+
+      let y = y_init;
+      for (let xi of data) {
+        // drop a dashed line from the data point to the start of the error bar
+        p.strokeWeight(1);
+        p.stroke(palette.fg(0.4));
+        p.drawingContext.setLineDash([3, 3]);
+        plot.draw_line(xi, 0, xi, y);
+        p.drawingContext.setLineDash([]);
+
+        y -= spacing;
+      }
+
+      // we repeat the plot loop to draw the error bars on top of the dashed lines
+
+      y = y_init;
+      for (let xi of data) {
+        p.stroke(palette.bad(0.5));
+        p.strokeWeight(4);
+        // make the end caps square
+        p.strokeCap(p.SQUARE);
+        plot.draw_line(h, y, xi, y);
+
+        y -= spacing;
+      }
+
+      // drop a line down from the hypothesis to the bottom of the error bars
+      p.strokeWeight(2);
+      p.stroke(palette.fg());
+      plot.draw_line(
+        h,
+        plot.py(plot.cy(0) + HYPOTHESIS_Y_OFFSET_PIXELS),
+        h,
+        y + spacing,
+      );
+    }
+
+    function _draw_vertical_error_bars() {
+      let y_cursor = 0;
+      let max_loss = maxLoss();
+      p.strokeCap(p.SQUARE);
+      p.stroke(palette.bad(0.5));
+      p.strokeWeight(4);
+      for (let xi of data) {
+        let err = getLossFunction()(xi, h) / max_loss;
+        p.line(
+          plot.cx(h),
+          plot.cy(y_cursor),
+          plot.cx(h),
+          plot.cy(y_cursor + err) + 2,
+        );
+        y_cursor += err;
+      }
+    }
+
+    function _draw_risk() {
+      p.strokeCap(p.ROUND);
+      p.stroke(palette.bad());
+      p.strokeWeight(4);
+
+      let x_end = opts.x_range[1];
+      if (opts.risk_style === "as-you-go") {
+        x_end = h;
+      }
+      let hs = linspace(opts.x_range[0], x_end, 100);
+      let raw_risks = hs.map(risk);
+      let max_risk = Math.max(...raw_risks);
+      let normalized_risks = raw_risks.map((r) => r / max_risk);
+
+      plot.plot(hs, normalized_risks);
+    }
+
+    function _draw_data_labels() {
+      for (let i = 0; i < data.length; i++) {
+        plot_tex.setPosition(i, data[i], 0, "bottom");
+        plot_tex.elements[i].style("color", palette.fg());
+        plot_tex.elements[i].style("padding-bottom", "6px");
+      }
+    }
+
+    class AnimateHypothesis {
+      constructor(animation_opts) {
+        this.speed_factor = animation_opts.speed_factor || 1;
+        this.style = animation_opts.style || "once";
+        this.start_h = animation_opts.start_h || opts.x_range[0];
+        this.end_h = animation_opts.end_h || opts.x_range[1];
+        this.show_buttons = animation_opts.show_buttons || true;
+
+        this.running = animation_opts.start_running || true;
+        this.direction = 1;
+
+        this.stop_button = '<i class="bi bi-pause-fill"></i>';
+        this.start_button = '<i class="bi bi-play-fill"></i>';
+        this.restart_button = '<i class="bi bi-rewind-fill"></i>';
+
+        h = this.start_h;
+      }
+
+      _setup_button() {
+        this.running = !this.running;
+        this.button.html(this.running ? this.stop_button : this.start_button);
+      }
+
+      setup() {
+        this.button = p
+          .createButton(this.running ? this.stop_button : this.start_button)
+          .mousePressed(this._setup_button.bind(this));
+
+        this.button.class("btn btn-primary");
+      }
+
+      draw() {
+        let span = this.end_h - this.start_h;
+
+        if (!this.running) {
+          return;
+        }
+
+        if (this.style === "back-to-start") {
+          h += (this.speed_factor * span) / 200;
+          if (h >= this.end_h) {
+            h = this.start_h;
+          }
+        } else if (this.style === "back-and-forth") {
+          if (h >= this.end_h) {
+            this.direction = -1;
+          }
+
+          if (h <= this.start_h) {
+            this.direction = 1;
+          }
+
+          h += (this.direction * this.speed_factor * span) / 200;
+
+          // h += (this.direction * this.speed_factor * span) / 100;
+        } else if (this.style === "once") {
+          h += (this.speed_factor * span) / 200;
+
+          if (h >= this.end_h) {
+            h = this.end_h;
+            this.running = false;
+
+            if (this.button) {
+              this.button.html(this.restart_button);
+              this.button.mousePressed(() => {
+                h = this.start_h;
+                this.running = true;
+                this.button.html(this.stop_button);
+                this.button.mousePressed(this._setup_button.bind(this));
+              });
+            }
+          }
+        }
+      }
+    }
+
+    class NullAnimation {
+      setup() {}
+
+      draw() {}
+    }
+
+    if (opts.animation === null) {
+      opts.animation = new NullAnimation();
+    } else {
+      let [animation_name, animation_opts] = opts.animation;
+      if (animation_name === "sweep_hypothesis") {
+        opts.animation = new AnimateHypothesis(animation_opts);
+      }
+    }
+
+    /** is the plot tall? this happens when we plot the risk and/or the vertical
+     * error bars
+     */
+    function _is_plot_tall() {
+      return opts.draw_risk || opts.draw_vertical_error_bars;
     }
 
     // setup function
     p.setup = function () {
-      let [width, height] = canvasSize();
-      p.createCanvas(width, height);
+      let canvas_height = _is_plot_tall() ? 266 : 133;
+      canvas_height +=
+        HYPOTHESIS_Y_OFFSET_PIXELS + HYPOTHESIS_HEIGHT_PIXELS + 40;
+      let y_max = _is_plot_tall() ? 1 : 0.05;
+      let y_min = -0.1 - 0.05 * data.length;
+      let canvas = p.createCanvas(400, canvas_height);
       p.clear();
 
-      plot = new Plot(
-        p,
-        palette,
-        opts.data,
-        opts.w_0,
-        [width - 10, height - 10],
-        [0 + 5, 0],
-        [opts.x_min, opts.x_max],
-        [-1, 1],
-      );
+      plot = new Plot(p, [400, canvas_height], {
+        padding: 12,
+        x_range: opts.x_range,
+        y_range: [y_min, y_max],
+      });
 
-      for (const [index, element] of opts.data.entries()) {
-        point_tex.push(p.createP(`$$x_${index + 1}$$`));
+      if (opts.draw_data_labels) {
+        let labels = data.map((_, i) => `\\(x_{${i + 1}}\\)`);
+        plot_tex = new PlotTeX(canvas, plot, labels);
+        renderMathInElement(document.body);
       }
 
-      renderMathInElement(document.getElementById(div_id));
+      opts.animation.setup();
     };
 
     // draw function
@@ -358,56 +402,39 @@ function configure_sketch(div_id, getTheme, opts) {
       p.clear();
       p.background(palette.bg());
 
-      p.strokeWeight(2);
+      if (opts.draw_horizontal_error_bars) _draw_horizontal_error_bars();
 
-      p.stroke(palette.fg());
-      plot.draw_axes();
-      p.stroke(palette.fg());
-      p.fill(palette.fg());
-      plot.draw_xticks(10, { labels: true });
+      _draw_hypothesis();
 
-      // draw the point labels and update their colors
-      for (let [index, p] of point_tex.entries()) {
-        p.position(plot.cx(opts.data[index]), plot.cy(0) + 15);
+      if (opts.draw_vertical_error_bars) _draw_vertical_error_bars();
 
-        p.style("color", palette.fg());
+      if (opts.draw_risk) _draw_risk();
+
+      _draw_axes();
+      _draw_data();
+
+      if (opts.draw_data_labels) {
+        _draw_data_labels();
       }
 
-      p.stroke(palette.fg());
-      p.fill(palette.bg());
-
-      plot.draw_errors();
-      plot.draw_hypothesis();
-
-      plot.draw_vertical_errors();
-
-      plot.draw_risk();
-
-      if (!p.mouseIsPressed) {
-        plot.h_is_being_dragged = false;
-      }
-
-      for (let x of opts.data) {
-        p.strokeWeight(2);
-        p.stroke(palette.bg());
-        p.fill(palette.primary());
-        plot.draw_data();
-      }
+      opts.animation.draw();
     };
 
-    // on drag
     p.mouseDragged = function () {
-      if (plot._is_mouse_near_hypothesis_marker()) {
-        plot.h_is_being_dragged = true;
+      if (_is_mouse_over_hypothesis() && opts.h_selectable) {
+        h_selected = true;
       }
 
-      plot.drag();
+      if (h_selected) {
+        h = plot.px(p.mouseX);
+      }
+
+      // clip the value of h
+      h = Math.max(opts.x_range[0], Math.min(opts.x_range[1], h));
     };
 
-    p.windowResized = function () {
-      let [width, height] = canvasSize();
-      p.resizeCanvas(width, height);
-      plot.size = [width - 10, height - 10];
+    p.mouseReleased = function () {
+      h_selected = false;
     };
   }
 
@@ -415,6 +442,16 @@ function configure_sketch(div_id, getTheme, opts) {
 }
 
 export function setup_dynamic(div_id, getTheme, opts) {
+  opts.data = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  opts.data = [1, 2, 3];
+  opts.animation = [
+    "sweep_hypothesis",
+    {
+      start_h: 1,
+      end_h: 3,
+    },
+  ];
+  opts.risk_style = "as-you-go";
   let sketch = configure_sketch(div_id, getTheme, opts);
   new p5(sketch, div_id);
 }
