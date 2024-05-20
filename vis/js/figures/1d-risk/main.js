@@ -8,8 +8,8 @@ function configure_sketch(div_id, getTheme, opts = {}) {
     x_tick_spacing: null,
     x_tick_formatter: (x) => x.toFixed(2),
     draw_horizontal_error_bars: false,
-    draw_vertical_error_bars: false,
-    draw_hypothesis: false,
+    draw_vertical_error_bars: true,
+    draw_hypothesis: true,
     animation: null,
     draw_risk: true,
     risk_style: null,
@@ -512,12 +512,6 @@ function configure_sketch(div_id, getTheme, opts = {}) {
 }
 
 export function setup_dynamic(div_id, getTheme, opts) {
-  opts.data = [3, 4, 5];
-  opts.animation = [
-    "data",
-    { data: [1, 4, 5], speed_factor: 0.75, pause: 0.5 },
-  ];
-  opts.loss = "square";
   let sketch = configure_sketch(div_id, getTheme, opts);
   new p5(sketch, div_id);
 }
