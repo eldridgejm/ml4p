@@ -511,7 +511,8 @@ export class PlotTeX {
    */
   page_x(x) {
     let canvasPosition = this.canvas.elt.getBoundingClientRect();
-    return this.plot.cx(x) + canvasPosition.left;
+    let scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+    return scrollLeft + canvasPosition.left + this.plot.cx(x);
   }
 
   /**
@@ -519,7 +520,8 @@ export class PlotTeX {
    */
   page_y(y) {
     let canvasPosition = this.canvas.elt.getBoundingClientRect();
-    return this.plot.cy(y) + canvasPosition.top;
+    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+    return scrollTop + canvasPosition.top + this.plot.cy(y);
   }
 
   setPosition(i, x, y, anchor = "center") {

@@ -1,5 +1,13 @@
 import { Palette, Plot, PlotTeX, linspace } from "../../lib/mlbook/main.js";
 
+function* cycle(iterable) {
+  while (true) {
+    for (const item of iterable) {
+      yield item;
+    }
+  }
+}
+
 function configure_sketch(div_id, getTheme, opts = {}) {
   const defaults = {
     h: null,
@@ -7,14 +15,15 @@ function configure_sketch(div_id, getTheme, opts = {}) {
     draw_x_ticks: true,
     x_tick_spacing: null,
     x_tick_formatter: (x) => x.toFixed(2),
-    draw_horizontal_error_bars: false,
+    draw_horizontal_error_bars: true,
     draw_vertical_error_bars: true,
     draw_hypothesis: true,
     animation: null,
     draw_risk: true,
+    draw_risk_terms: false,
     risk_style: null,
-    risk_id: null,
-    draw_data_labels: false,
+    dom_risk_id: null,
+    draw_data_labels: true,
     loss: "absolute",
   };
 
@@ -56,10 +65,10 @@ function configure_sketch(div_id, getTheme, opts = {}) {
   // "global" settings
 
   // vertical position of the first error bar below the x-axis, in pixels
-  let HORIZONTAL_ERROR_BAR_Y_OFFSET_PIXELS = 30;
+  const HORIZONTAL_ERROR_BAR_Y_OFFSET_PIXELS = 30;
 
   // vertical spacing between the horizontal error bars, in pixels
-  let HORIZONTAL_ERROR_BAR_SPACING_PIXELS = 10;
+  const HORIZONTAL_ERROR_BAR_SPACING_PIXELS = 10;
 
   // how far below the x-axis should the tip of the triangle be? depends
   // on the number of data points
@@ -72,7 +81,15 @@ function configure_sketch(div_id, getTheme, opts = {}) {
     HYPOTHESIS_Y_OFFSET_PIXELS = 30;
   }
 
-  let HYPOTHESIS_HEIGHT_PIXELS = 20;
+  const HYPOTHESIS_HEIGHT_PIXELS = 20;
+
+  const COLORS = [
+    palette.c2(),
+    palette.c3(),
+    palette.c4(),
+    palette.c5(),
+    palette.c6(),
+  ];
 
   // helper functions
   // ================
@@ -115,10 +132,10 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       // draw a number line
       p.strokeWeight(2);
       p.stroke(palette.fg());
-      let x_start_arrow = !(opts.draw_risk || opts.draw_vertical_error_bars);
+      let x_start_arrow = !_is_plot_tall();
       plot.draw_x_axis({ start_arrow: x_start_arrow });
 
-      if (opts.draw_risk || opts.draw_vertical_error_bars) {
+      if (_is_plot_tall()) {
         plot.draw_y_axis({ range: [0, 0.95], start_arrow: false });
       }
 
@@ -146,7 +163,18 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       p.fill(palette.c0(factor * 0.5));
       p.stroke(palette.c0());
       p.strokeWeight(2);
-      plot.scatter(data, zeros, { radius: 12 });
+
+      let colors = cycle(COLORS);
+
+      for (let xi of data) {
+        if (opts.draw_risk_terms) {
+          let color = colors.next().value;
+          p.fill(color);
+          p.stroke(palette.fg());
+        }
+
+        plot.draw_point(xi, 0, { radius: 12 });
+      }
     }
 
     function _draw_hypothesis() {
@@ -280,6 +308,34 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       let normalized_risks = raw_risks.map((r) => r / max_risk);
 
       plot.plot(hs, normalized_risks);
+
+      // draw a little circle on the risk curve at the current hypothesis
+      p.fill(palette.bad(0));
+      p.stroke(palette.bad());
+      p.strokeWeight(2);
+      plot.draw_point(h, risk(h) / max_risk, { radius: 8 });
+    }
+
+    function _draw_risk_terms() {
+      let hs = linspace(opts.x_range[0], opts.x_range[1], 100);
+      let raw_risks = hs.map(risk);
+      let max_risk = Math.max(...raw_risks);
+
+      let colors = cycle(COLORS);
+
+      for (let xi of data) {
+        let color = colors.next().value;
+        let loss = getLossFunction();
+        function risk_term(h) {
+          return loss(xi, h) / (data.length * max_risk);
+        }
+
+        let ys = hs.map(risk_term);
+
+        p.stroke(color);
+        p.strokeWeight(2);
+        plot.plot(hs, ys);
+      }
     }
 
     function _draw_data_labels() {
@@ -437,7 +493,9 @@ function configure_sketch(div_id, getTheme, opts = {}) {
      * error bars
      */
     function _is_plot_tall() {
-      return opts.draw_risk || opts.draw_vertical_error_bars;
+      return (
+        opts.draw_risk || opts.draw_vertical_error_bars || opts.draw_risk_terms
+      );
     }
 
     // setup function
@@ -471,19 +529,19 @@ function configure_sketch(div_id, getTheme, opts = {}) {
 
       if (opts.draw_horizontal_error_bars) _draw_horizontal_error_bars();
 
+      if (opts.draw_risk_terms) _draw_risk_terms();
+
       _draw_axes();
 
       _draw_data();
+
+      if (opts.draw_data_labels) _draw_data_labels();
 
       if (opts.draw_vertical_error_bars) _draw_vertical_error_bars();
 
       if (opts.draw_hypothesis) _draw_hypothesis();
 
       if (opts.draw_risk) _draw_risk();
-
-      if (opts.draw_data_labels) {
-        _draw_data_labels();
-      }
 
       if (opts.risk_id !== null) {
         // update the span with the current risk

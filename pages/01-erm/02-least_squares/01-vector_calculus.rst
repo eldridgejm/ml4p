@@ -112,3 +112,13 @@ and the fact that :math:`||A||^2 = A^T A`:
 
 Here is more content
 --------------------
+
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk
+.. jsfig:: 1d-risk

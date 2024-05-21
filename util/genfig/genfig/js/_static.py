@@ -32,7 +32,7 @@ def _take_browser_screenshot(
     figure_directory: pathlib.Path, theme: str = "light"
 ) -> Image.Image:
     options = Options()
-    # options.add_argument("--headless")  # Ensure GUI is off
+    options.add_argument("--headless")  # Ensure GUI is off
     options.add_argument("--no-sandbox")
 
     # Include the path to your ChromeDriver if necessary

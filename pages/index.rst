@@ -24,9 +24,10 @@ A truly introductory machine learning textbook by
    acknowledgements.rst
 
 .. jsfig:: 1d-risk
+   :align: start
 
    {
-      draw_data_labels: false,
+      draw_data_labels: true,
       loss: "square",
       draw_x_ticks: false,
       risk_style: "as-you-go",
