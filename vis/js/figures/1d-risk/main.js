@@ -119,7 +119,7 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       plot.draw_x_axis({ start_arrow: x_start_arrow });
 
       if (opts.draw_risk || opts.draw_vertical_error_bars) {
-        plot.draw_y_axis({ range: [0, .95], start_arrow: false });
+        plot.draw_y_axis({ range: [0, 0.95], start_arrow: false });
       }
 
       if (opts.draw_x_ticks) {
@@ -159,6 +159,12 @@ function configure_sketch(div_id, getTheme, opts = {}) {
       p.stroke(palette.fg());
       p.strokeWeight(2);
       plot.draw_line(h, 0, h, y);
+
+      // draw a little circle at the tip of the hypothesis, on the x-axis
+      p.fill(palette.fg());
+      p.stroke(palette.fg());
+      p.strokeWeight(2);
+      plot.draw_point(h, 0, { radius: 4 });
 
       let mouse_over = _is_mouse_over_hypothesis() && opts.h_selectable;
 
@@ -465,13 +471,13 @@ function configure_sketch(div_id, getTheme, opts = {}) {
 
       if (opts.draw_horizontal_error_bars) _draw_horizontal_error_bars();
 
-      if (opts.draw_hypothesis) _draw_hypothesis();
-
-      if (opts.draw_vertical_error_bars) _draw_vertical_error_bars();
-
       _draw_axes();
 
       _draw_data();
+
+      if (opts.draw_vertical_error_bars) _draw_vertical_error_bars();
+
+      if (opts.draw_hypothesis) _draw_hypothesis();
 
       if (opts.draw_risk) _draw_risk();
 
