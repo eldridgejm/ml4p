@@ -1,11 +1,11 @@
-{% macro make_part_item(part) %}
+{% macro make_part_item(part, id_prefix) %}
 <li class="mb-1">
-  <div id="sb-btn-{{ key_to_html_id(part.key) }}" class="mlb-sb-btn-part d-flex btn text-start border-0" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(part.key) }}-collapse" aria-expanded="{{ 'true' if part.is_active(pagename) else 'false' }}">
+  <div id="{{ id_prefix }}sb-btn-{{ key_to_html_id(part.key) }}" class="mlb-sb-btn-part d-flex btn text-start border-0" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(part.key) }}-collapse" aria-expanded="{{ 'true' if part.is_active(pagename) else 'false' }}">
 
     <!-- this is the "fold icon": an arrow that rotates 90 degrees when the part is collapsed -->
     <!-- the rotation is controlled by mlbook-sidebar.js -->
     <div class="align-items-end d-flex mlb-fold-icon-part">
-      <img id="sb-fold-icon-{{ key_to_html_id(part.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
+      <img id="{{ id_prefix }}sb-fold-icon-{{ key_to_html_id(part.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
     </div>
 
     <div class="d-flex flex-column">
@@ -21,7 +21,7 @@
     <ul class="mlb-sb-chapter list-unstyled fw-normal pb-1">
       <li><a href="{{ pathto(part.index.key) }}" class="mlb-sb-chapter text-body d-flex text-decoration-none rounded">Introduction</a></li>
       {%- for chapter in part.children %}
-      {{ make_chapter_item(chapter, loop.index) }}
+      {{ make_chapter_item(chapter, loop.index, id_prefix=id_prefix) }}
       {% endfor %}
     </ul>
   </div>
@@ -29,14 +29,14 @@
 {% endmacro %}
 
 
-{% macro make_chapter_item(chapter, i) %}
+{% macro make_chapter_item(chapter, i, id_prefix) %}
 <li>
-  <div id="sb-btn-{{ key_to_html_id(chapter.key) }}" class="d-flex mlb-sb-btn-chapter btn align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(chapter.key) }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}">
+  <div id="{{ id_prefix }}sb-btn-{{ key_to_html_id(chapter.key) }}" class="d-flex mlb-sb-btn-chapter btn align-items-center rounded border-0 collapsed" data-bs-toggle="collapse" data-bs-target="#{{ key_to_html_id(chapter.key) }}-collapse" aria-expanded="{{ 'true' if chapter.is_active(pagename) else 'false' }}">
 
     <!-- this is the "fold icon": an arrow that rotates 90 degrees when the part is collapsed -->
     <!-- the rotation is controlled by mlbook-sidebar.js -->
     <div class="flex-shrink-0 align-items-end mlb-fold-icon-chapter">
-      <img class="mlb-fold-icon" id="sb-fold-icon-{{ key_to_html_id(chapter.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
+      <img class="mlb-fold-icon" id="{{ id_prefix }}sb-fold-icon-{{ key_to_html_id(chapter.key) }}" src="data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e">
     </div>
 
     <div class="text-start">
@@ -73,14 +73,14 @@
 </li>
 {% endmacro %}
 
-{% macro make_sidebar() %}
+{% macro make_sidebar(id_prefix="") %}
   <a href="/" class="d-flex align-items-center pt-3 pb-4 mb-3 link-body-emphasis text-decoration-none border-bottom justify-content-center">
     <span class="fs-5 fw-semibold">ML4P</span>
   </a>
 
   <ul class="list-unstyled ps-0">
     {%- for part in booktree %}
-    {{ make_part_item(part) }}
+    {{ make_part_item(part, id_prefix) }}
     {% endfor %}
   </ul>
 
