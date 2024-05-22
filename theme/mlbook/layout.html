@@ -86,7 +86,7 @@
           </button>
         </div>
 
-
+        <!-- breadcrumbs (part / chapter / section) -->
         <div class="d-lg-block d-none" style="margin-top: 3em; font-size: 11pt" class="text-truncate">
           {% if active_page.is_part_index %}
           <div class="text-uppercase fw-bold">
@@ -113,7 +113,7 @@
           {% endif %}
         </div>
 
-
+        <!-- main content -->
         {% block body %} {% endblock %}
 
         <!-- previous and next page buttons -->
@@ -144,6 +144,7 @@
       </div>
     </div>
     <div class="col-lg-2 d-none d-lg-block">
+      <!-- "on this page" bar -->
       {%- if active_page.is_section %}
       {% include 'tocbar.html' %}
       {%- endif %}
