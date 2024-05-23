@@ -1,1 +1,3 @@
-# Machine Learning (For People Who Don't Already Know ML)
+# Machine Learning for People
+
+(who don't already know ML)
