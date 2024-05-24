@@ -81,6 +81,9 @@ let dark_theme = {
 Object.assign(light_theme, common_colors, semantic_colors, ordered_colors);
 Object.assign(dark_theme, common_colors, semantic_colors, ordered_colors);
 
+/**
+  * A class for managing color palettes.
+  **/
 export class Palette {
   constructor(getTheme) {
     this.theme = getTheme;
@@ -494,6 +497,9 @@ export function linspace(start, stop, num) {
   return Array.from({ length: num }, (_, i) => start + step * i);
 }
 
+/**
+  * Draws LaTeX text on a plot.
+  **/
 export class PlotTeX {
   constructor(canvas_element, plot, text) {
     this.canvas = canvas_element;
