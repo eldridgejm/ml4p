@@ -27,8 +27,36 @@
                 p.selenium
                 p.pillow
                 p.rich
+                p.sphinx_rtd_theme
+                p.sphinxcontrib-katex
+
+                # sphinx-js
+                (
+                  pkgs.python3.pkgs.buildPythonPackage rec {
+                    pname = "sphinx-js";
+                    version = "3.2.2";
+                    src = pkgs.fetchPypi {
+                      inherit pname version;
+                      sha256 = "sha256-njEFmU3Qqm0yV7i0GV3KOOM1siO/KNvshpnxtiS1WtQ=";
+                    };
+
+                    buildInputs = with pkgs.python3Packages; [
+                      pip
+                      pytest
+                    ];
+
+                    propagatedBuildInputs = [
+                      pkgs.sphinx
+                      pkgs.python3Packages.parsimonious
+                    ];
+                  }
+                )
               ])
             )
+
+            pkgs.nodejs
+            pkgs.nodePackages.live-server
+            pkgs.nodePackages.jsdoc
 
             pkgs.chromedriver
           ];

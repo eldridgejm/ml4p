@@ -5,7 +5,7 @@
 # from the environment for the first two.
 SPHINXOPTS    ?=-T
 SPHINXBUILD   ?= sphinx-build
-SOURCEDIR     = pages
+SOURCEDIR     = book
 BUILDDIR      = _build
 
 .PHONY: serve
