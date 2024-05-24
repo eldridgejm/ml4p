@@ -1,6 +1,8 @@
 ML4P Developer Notes
 ====================
 
+Tips for hacking on the ML4P textbook.
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
