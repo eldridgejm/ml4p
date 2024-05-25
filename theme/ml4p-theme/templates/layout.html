@@ -22,11 +22,11 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-<!-- mlbook -->
-<link href="{{ pathto("_static/mlbook.css", 1) }}" rel="stylesheet">
-<link href="{{ pathto("_static/mlbook-sidebar.css", 1) }}" rel="stylesheet">
-<script src="{{ pathto("_static/mlbook-sidebar.js", 1) }}"></script>
-<script src="{{ pathto("_static/mlbook.js", 1) }}"></script>
+<!-- ml4p -->
+<link href="{{ pathto("_static/ml4p.css", 1) }}" rel="stylesheet">
+<link href="{{ pathto("_static/ml4p-sidebar.css", 1) }}" rel="stylesheet">
+<script src="{{ pathto("_static/ml4p-sidebar.js", 1) }}"></script>
+<script src="{{ pathto("_static/ml4p.js", 1) }}"></script>
 
 <!-- google fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,12 +47,12 @@
   onload="renderMathInElement(document.body);"></script>
 
 {% if active_page.is_section %}
-<link href="{{ pathto("_static/mlbook-section.css", 1) }}" rel="stylesheet">
-<link href="{{ pathto("_static/mlbook-tocbar.css", 1) }}" rel="stylesheet">
+<link href="{{ pathto("_static/ml4p-section.css", 1) }}" rel="stylesheet">
+<link href="{{ pathto("_static/ml4p-tocbar.css", 1) }}" rel="stylesheet">
 {% endif %}
 
 {% if active_page.is_index %}
-<link href="{{ pathto("_static/mlbook-index.css", 1) }}" rel="stylesheet">
+<link href="{{ pathto("_static/ml4p-index.css", 1) }}" rel="stylesheet">
 {% endif %}
 
 {%- endblock %}

@@ -95,11 +95,9 @@ h6:hover .headerlink {
   visibility: visible;
 }
 
-
 button.hamburger:hover {
   background-color: var(--bs-tertiary-bg);
 }
-
 
 div.highlight {
   margin-left: 2em;

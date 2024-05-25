@@ -1,4 +1,4 @@
-import { Palette, Plot, PlotTeX, linspace } from "../../lib/mlbook/main.js";
+import { Palette, Plot, PlotTeX, linspace } from "../../lib/ml4p/main.js";
 
 function configure_sketch(div_id, getTheme, opts) {
   let palette = new Palette(getTheme);

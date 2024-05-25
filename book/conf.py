@@ -16,20 +16,17 @@ author = "Justin Eldridge"
 import pathlib
 import sys
 
-sys.path.append(str(pathlib.Path(__file__).parent.parent / "extensions"))
+root = pathlib.Path(__file__).parent.parent
+sys.path.append(str(root / "ext"))
 
-extensions = ["mlbook", "sphinxcontrib.katex", "matplotlib.sphinxext.plot_directive"]
+extensions = ["ml4p", "sphinxcontrib.katex"]
 
-plot_formats = [("png", 300)]
-plot_rcparams = {"savefig.transparent": True}
-
-templates_path = ["_templates"]
 exclude_patterns = []
 
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = "mlbook"
-html_theme_path = ["../theme"]
-html_static_path = ["_static"]
+html_theme = "ml4p"
+html_theme_path = ["../ext/"]
+templates_path = ["../ext/ml4p/theme/templates"]

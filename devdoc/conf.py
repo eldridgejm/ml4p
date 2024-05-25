@@ -18,7 +18,7 @@ extensions = ['sphinx_js']
 templates_path = ["_templates"]
 exclude_patterns = []
 
-js_source_path = '../vis/js/lib/mlbook'
+js_source_path = '../vis/js/lib/ml4p'
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
