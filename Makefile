@@ -1,6 +1,3 @@
-# Minimal makefile for Sphinx documentation
-#
-
 # You can set these variables from the command line, and also
 # from the environment for the first two.
 SPHINXOPTS    ?=-T
@@ -8,13 +5,10 @@ SPHINXBUILD   ?= sphinx-build
 SOURCEDIR     = book
 BUILDDIR      = _build
 
-.PHONY: serve
-serve:
-	live-server _build/html
 
-.PHONY: continuous
-continuous:
-	fd . | entr fish -c 'make html'
+.PHONY: develop
+develop:
+	develop
 
 .PHONY: html
 html:
@@ -25,3 +19,7 @@ html:
 .PHONY: clean
 clean:
 	rm -rf $(BUILDDIR)/*
+
+.PHONY: really-clean
+really-clean: clean
+	git clean -xfd

@@ -1,0 +1,42 @@
+#! /usr/bin/env bash
+
+# develop
+# -------
+# Starts a live server and continuously rebuilds the HTML version of the book.
+
+function cleanup() {
+  echo "Cleaning up..."
+  kill $live_server_pid
+  kill $recompile_pid
+}
+
+function recompile() {
+  fd . book | entr make html
+}
+
+function main() {
+  # must be run from the root of the repository
+  gitroot=$(git rev-parse --show-toplevel)
+  cd "$gitroot" || exit 1
+
+  # clean up to start
+  make clean
+  make html
+
+  recompile &
+  recompile_pid=$!
+
+  # start the live server in the background
+  live-server _build/html &> /dev/null &
+  live_server_pid=$!
+
+  # set up a trap to kill the live server when the script exits
+  trap cleanup EXIT
+
+  while true; do
+    sleep 1
+  done
+
+}
+
+main

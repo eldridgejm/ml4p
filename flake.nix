@@ -64,7 +64,7 @@
           # modifies the environment; bash
           shellHook = ''
             export PYTHONPATH=$(pwd)/util/genfig:$PYTHONPATH
-            export PATH=$(pwd)/util/genfig/bin:$PATH
+            export PATH=$(pwd)/util/genfig/bin:$(pwd)/util/scripts:$PATH
           '';
         }
     );
