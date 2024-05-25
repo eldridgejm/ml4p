@@ -13,12 +13,21 @@ author = "Justin Eldridge"
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
 
-extensions = ['sphinx_js']
+import sys
+
+sys.path.append("../ext")
+
+extensions = [
+    "sphinx_js",
+    "sphinx.ext.autosummary",
+    "sphinx.ext.autodoc",
+    "sphinx.ext.napoleon",
+]
 
 templates_path = ["_templates"]
 exclude_patterns = []
 
-js_source_path = '../vis/js/lib/ml4p'
+js_source_path = "../vis/js/lib/ml4p"
 
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output

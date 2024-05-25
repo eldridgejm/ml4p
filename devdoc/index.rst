@@ -7,7 +7,6 @@ Tips for hacking on the ML4P textbook.
    :maxdepth: 2
    :caption: Contents:
 
-   github-actions.rst
    theme.rst
    extensions.rst
    utils.rst

@@ -1,7 +1,6 @@
 """Populates the HTML templating context."""
-from typing import Union, List, NamedTuple, Optional, Sequence
+from typing import Union, Optional, Sequence, List
 
-import logging
 from sphinx.errors import ExtensionError
 from docutils.nodes import section
 
@@ -11,14 +10,14 @@ class PageInfo:
 
     There are three types of pages:
 
-    - Index pages: These are the `index.rst` files in each part and chapter, as
+    - **Index pages**: These are the `index.rst` files in each part and chapter, as
       well as the root `index.rst` file. They contain toctrees.
 
-    - Section pages: These pages occur three levels deep in the filesystem
+    - **Section pages**: These pages occur three levels deep in the filesystem
       (they are nested within a part and a chapter). They contain the main
       content of the book.
 
-    - Supplement pages: These are non-index pages that are not section pages.
+    - **Supplement pages**: These are non-index pages that are not section pages.
       They can occur at the root level (alongside the root index page), or
       within a part (but not within a chapter, because those pages would be
       section pages by definition).
@@ -97,7 +96,25 @@ class PageInfo:
 
 
 class ChapterInfo:
-    """Contains information about a book chapter."""
+    """Contains information about a book chapter.
+
+    Attributes
+    ----------
+    title : str
+        The title of the chapter. This is the first heading in the chapter's index page.
+    number : int
+        The number of the chapter within its parent part.
+    key : str
+        The key of the chapter. This is the path to the chapter's index page, relative
+        to the root of the book and without the `.rst` extension.
+    index : PageInfo
+        Information about the chapter's index page.
+    parent : PartInfo
+        The part containing the chapter.
+    children : List[PageInfo]
+        The pages in the chapter. If there are no pages, this list is empty.
+
+    """
 
     def __init__(
         self,
@@ -115,11 +132,20 @@ class ChapterInfo:
         self.parent = parent
         self.children = list(children) if children is not None else []
 
-    def is_active(self, docname: str):
+    def is_active(self, docname: str) -> bool:
+        """Is the page being rendered under this chapter of the book?"""
         return docname.split("/")[:2] == self.key.split("/")[:2]
 
     @classmethod
-    def from_app_env(cls, env, index_docname: str, parent, number: int):
+    def from_app_env(
+        cls, env, index_docname: str, parent, number: int
+    ) -> "ChapterInfo":
+        """Create a :class:`ChapterInfo` instance from the Sphinx application environment.
+
+        Recursively constructs the :class:`ChapterInfo` and :class:`PageInfo` instances
+        containing information about the chapter's structure.
+
+        """
         title = env.titles[index_docname].astext()
         index = PageInfo(title, index_docname, parent=None)
 
@@ -135,7 +161,23 @@ class ChapterInfo:
 
 
 class PartInfo:
-    """Contains information about a book part."""
+    """Contains information about a book part.
+
+    Attributes
+    ----------
+    supertitle : str
+        The "supertitle" of the part. This is specified in the metadata of the part's
+        index page. Usually, it's something like "Part I" or "Appendix A".
+    title : str
+        The title of the part. This is the first heading in the part's index page.
+    key : str
+        The key of the part. This is the path to the part's index page, relative to the
+        root of the book and without the `.rst` extension.
+    index : PageInfo
+        Information about the part's index page.
+    children : List[ChapterInfo]
+        The chapters in the part. If there are no chapters, this list is empty.
+    """
 
     def __init__(
         self,
@@ -151,11 +193,20 @@ class PartInfo:
         self.index = index
         self.children = list(children) if children is not None else []
 
-    def is_active(self, docname: str):
+    def is_active(self, docname: str) -> bool:
+        """Is the page being rendered under this part of the book?"""
         return docname.split("/")[0] == self.key.split("/")[0]
 
     @classmethod
-    def from_app_env(cls, env, index_docname: str):
+    def from_app_env(cls, env, index_docname: str) -> "PartInfo":
+        """Create a :class:`PartInfo` instance from the Sphinx application environment.
+
+        This reads the book structure from the Sphinx environment and
+        recursively constructs the :class:`PartInfo`, :class:`ChapterInfo` and
+        :class:`PageInfo` instances containing information about book's
+        structure.
+
+        """
         metadata = env.metadata[index_docname]
         try:
             supertitle = metadata["supertitle"]
@@ -180,7 +231,7 @@ class PartInfo:
         return part
 
 
-def _make_booktree(app):
+def _make_booktree(app) -> List[PartInfo]:
     """
     The filesystem structure of the book is as follows:
 
