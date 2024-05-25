@@ -50,7 +50,7 @@ def visit_jsfigure_node(self, node):
       import { setup_dynamic } from "/_static/vis/js/figures/$figure_name/main.js";
 
       function getTheme() {
-        return document.body.getAttribute("data-bs-theme");
+        return document.documentElement.getAttribute("data-bs-theme");
       }
 
       setup_dynamic(
@@ -60,7 +60,7 @@ def visit_jsfigure_node(self, node):
       );
     </script>
 
-    <div class="mlb-figure text-$align d-flex-inline" id="$div_id"></div>
+    <div class="ml4p-figure text-$align d-flex-inline" id="$div_id"></div>
     """
     )
 

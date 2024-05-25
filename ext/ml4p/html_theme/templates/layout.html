@@ -1,104 +1,79 @@
-{%- extends "basic/layout.html" %}
-
 {% from 'sidebar.html' import make_sidebar with context %}
+
+{%- extends "basic/layout.html" %}
 
 {# removed existing top+bottom related nav, and embed in main content #}
 {%- block relbar1 %}{% endblock %}
 {%- block relbar2 %}{% endblock %}
 
+{%- block extrahead %}
+<!-- css and js includes -->
+{% include "extrahead.html" %}
+{%- endblock %}
+
 {%- block content %}
 
 <!-- off-canvas sidebar for mobile -->
-<div class="offcanvas offcanvas-start overflow-auto" tabindex="-1" id="ml4p-mobile-sidebar" aria-labelledby="ml4p-mobile-sidebar">
-  {{ make_sidebar(id_prefix="oc-") }}
+<div
+  class="offcanvas offcanvas-start overflow-auto"
+  tabindex="-1"
+  id="ml4p-mobile-sidebar"
+  aria-labelledby="ml4p-mobile-sidebar"
+>
+  {{ make_sidebar(id_prefix="mobile") }}
 </div>
 
 <div class="container">
   <div class="row">
     <div class="col-lg-3 d-none d-lg-block pt-3 px-4">
-      <div class="sticky-top" style="overflow: auto; -webkit-overflow-scrolling: touch;">
-        {{ make_sidebar() }}
+      <div
+        class="sticky-top"
+        style="overflow: auto; -webkit-overflow-scrolling: touch"
+      >
+        <!-- on canvas sidebar for desktop -->
+        {{ make_sidebar(id_prefix="desktop") }}
       </div>
     </div>
     <div class="col-lg-7 pt-4 px-5">
       <div class="body" role="main">
-
         <!-- a button that is only shown on small screens that toggles the sidebar -->
         <div class="d-lg-none mb-5">
-          <button class="btn border ml4p-hamburger" type="button" data-bs-toggle="offcanvas" data-bs-target="#ml4p-mobile-sidebar" aria-controls="ml4p-mobile-sidebar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-list" viewBox="0 0 16 16">
-              <path fill-rule="evenodd" d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"/>
+          <button
+            class="btn border ml4p-hamburger"
+            type="button"
+            data-bs-toggle="offcanvas"
+            data-bs-target="#ml4p-mobile-sidebar"
+            aria-controls="ml4p-mobile-sidebar"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-list"
+              viewBox="0 0 16 16"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M2.5 12a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5m0-4a.5.5 0 0 1 .5-.5h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5"
+              />
             </svg>
           </button>
         </div>
 
-        <!-- breadcrumbs (part / chapter / section) -->
-        <div class="d-lg-block d-none" style="margin-top: 3em; font-size: 11pt" class="text-truncate">
-          {% if active_page.is_part_index %}
-          <div class="text-uppercase fw-bold">
-            {{ active_page.parent.supertitle }}
-          </div>
-          {% endif %}
-
-          {% if active_page.is_chapter_index %}
-          <div class="text-uppercase fw-bold">
-            {{ active_page.parent.parent.supertitle }}
-            »
-            Chapter {{ active_page.parent.number }}
-          </div>
-          {% endif %}
-
-          {% if active_page.is_section %}
-          <div class="text-uppercase fw-bold">
-            {{ active_page.parent.parent.supertitle }}
-            »
-            Chapter {{ active_page.parent.number }}
-            »
-            Section {{ active_page.number }}
-          </div>
-          {% endif %}
-        </div>
+        {% include "breadcrumbs.html" %}
 
         <!-- main content -->
         {% block body %} {% endblock %}
 
-        <!-- previous and next page buttons -->
-        <div class="d-flex justify-content-center prev-next mt-5 mb-5">
-          <div class="d-inline-flex btn-group">
-            {% if active_page.prev %}
-            <a class="prev-next btn border d-inline-flex" href="{{ pathto(active_page.prev.key) }}">
-              <div class="align-items-center d-flex me-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-left" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M15 8a.5.5 0 0 0-.5-.5H2.707l3.147-3.146a.5.5 0 1 0-.708-.708l-4 4a.5.5 0 0 0 0 .708l4 4a.5.5 0 0 0 .708-.708L2.707 8.5H14.5A.5.5 0 0 0 15 8"/>
-                </svg>
-              </div>
-              {{ active_page.prev.title }}
-            </a>
-            {% endif %}
-            {% if active_page.next %}
-            <a class="prev-next btn border d-inline-flex" href="{{ pathto(active_page.next.key) }}">{{ active_page.next.title }}
-              <div class="align-items-center d-flex ms-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
-                  <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
-                </svg>
-              </div>
-            </a>
-            {% endif %}
-          </div>
-        </div>
-
+        {% include "prev_next.html" %}
       </div>
     </div>
     <div class="col-lg-2 d-none d-lg-block">
       <!-- "on this page" bar -->
-      {%- if active_page.is_section %}
-      {% include 'tocbar.html' %}
-      {%- endif %}
+      {%- if active_page.is_section %} {% include 'tocbar.html' %} {%- endif %}
     </div>
   </div>
 </div>
 
-{%- endblock %}
-
-{% block footer %}
-{% endblock %}
+{%- endblock %} {% block footer %} {% endblock %}

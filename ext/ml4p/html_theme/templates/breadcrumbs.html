@@ -1,0 +1,20 @@
+<!-- breadcrumbs (part / chapter / section) -->
+<div
+  class="d-lg-block d-none"
+  style="margin-top: 3em; font-size: 11pt"
+  class="text-truncate"
+>
+  {% if active_page.is_part_index %}
+  <div class="text-uppercase fw-bold">{{ active_page.parent.supertitle }}</div>
+  {% endif %} {% if active_page.is_chapter_index %}
+  <div class="text-uppercase fw-bold">
+    {{ active_page.parent.parent.supertitle }} » Chapter {{
+    active_page.parent.number }}
+  </div>
+  {% endif %} {% if active_page.is_section %}
+  <div class="text-uppercase fw-bold">
+    {{ active_page.parent.parent.supertitle }} » Chapter {{
+    active_page.parent.number }} » Section {{ active_page.number }}
+  </div>
+  {% endif %}
+</div>

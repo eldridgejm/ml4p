@@ -1,18 +1,20 @@
 <div class="sticky-top pt-5">
-  <span class="text-muted text-uppercase fw-bold" style="font-size: 9pt; opacity: 0.5;">
+  <span
+    class="text-muted text-uppercase fw-bold"
+    style="font-size: 9pt; opacity: 0.5"
+  >
     On this page
   </span>
   <ul class="list-unstyled" id="tocbar">
-    {%- for (heading, id, level, prev_level) in headings %}
-      {% if level > prev_level %}
-        <ul class="list-unstyled tocbar-{{ level }} tocbar-nested">
+    {%- for (heading, id, level, prev_level) in headings %} {% if level >
+    prev_level %}
+    <ul class="list-unstyled tocbar-{{ level }} tocbar-nested">
       {% elif level < prev_level %}
-        </ul>
-      {% endif %}
-      {% set prev_level = level %}
-      <li>
-        <a style="font-size: 10pt" href="#{{ id }}">{{ heading }}</a>
-      </li>
+    </ul>
+    {% endif %} {% set prev_level = level %}
+    <li>
+      <a style="font-size: 10pt" href="#{{ id }}">{{ heading }}</a>
+    </li>
     {%- endfor %}
   </ul>
 </div>
