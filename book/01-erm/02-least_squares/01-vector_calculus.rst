@@ -122,3 +122,66 @@ Here is more content
 .. jsfig:: 1d-risk
 .. jsfig:: 1d-risk
 .. jsfig:: 1d-risk
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static
+
+.. jsfig:: 1d-risk
+   :html_output: static

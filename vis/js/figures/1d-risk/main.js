@@ -35,7 +35,7 @@ function configure_sketch(div_id, getTheme, opts = {}) {
     opts.x_range = [0, 80];
     opts.x_tick_spacing = 10;
     opts.x_tick_formatter = (x) => x.toFixed(0);
-    opts.h = 40;
+    opts.h = opts.h || 40;
   }
 
   // if data was specified, but no x_range was specified...

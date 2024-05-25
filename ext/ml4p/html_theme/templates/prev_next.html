@@ -1,9 +1,9 @@
 <!-- previous and next buttons that appear at the bottom of the page -->
-<div class="d-flex justify-content-center prev-next mt-5 mb-5">
+<div class="d-flex justify-content-center ml4p-prev-next mt-5 mb-5">
   <div class="d-inline-flex btn-group">
     {% if active_page.prev %}
     <a
-      class="prev-next btn border d-inline-flex"
+      class="ml4p-prev-next btn border d-inline-flex"
       href="{{ pathto(active_page.prev.key) }}"
     >
       <div class="align-items-center d-flex me-2">
@@ -25,7 +25,7 @@
     </a>
     {% endif %} {% if active_page.next %}
     <a
-      class="prev-next btn border d-inline-flex"
+      class="ml4p-prev-next btn border d-inline-flex"
       href="{{ pathto(active_page.next.key) }}"
       >{{ active_page.next.title }}
       <div class="align-items-center d-flex ms-2">

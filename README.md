@@ -9,6 +9,6 @@
 - [x] Change from `mlbook` to `ml4p`
 - [x] Clean up the CSS for theming
 - [x] Clean up the JS for theming
-- [ ] Document theme
+- [x] Document theme
 - [ ] Update genfig for static js files
 - [ ] Update genfig for python

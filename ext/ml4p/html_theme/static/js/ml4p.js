@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   setupFoldIcons();
   setupThemeModeToggles();
+  setupGeneratedImages();
 });
 
 // theme change events
@@ -26,7 +27,7 @@ function getTheme() {
 function setTheme(theme) {
   // change the theme by setting the attribute on the html element
   document.documentElement.setAttribute("data-bs-theme", theme);
-  localStorage.setItem("theme", theme);
+  localStorage.setItem("ml4p-theme", theme);
 }
 
 function installThemeWatcher() {
@@ -154,6 +155,44 @@ function setupFoldIcons() {
   buttons.forEach((b) => updateFoldIconRotation(b, { animate: false }));
   installSidebarButtonClickHandlers(buttons);
   installFoldIconColorChangers(foldIcons);
+}
+
+// generated images
+// ================
+
+function updateGeneratedImageColor(image, theme) {
+  // the end of the src will be either -light.png or -dark.png, and we adjust
+  // it based on the current theme
+  let newSrc = image.src.replace(/-(light|dark)\.png$/, `-${theme}.png`);
+  // this prevents an infinite loop where setting the src triggers the
+  // onload event, which triggers the src to be set again
+  if (newSrc !== image.src) {
+    image.src = newSrc;
+  }
+}
+
+function installGeneratedImageColorChangers(images) {
+  document.addEventListener("ml4p-theme-changed", function (event) {
+    let theme = getTheme();
+    images.forEach(function (image) {
+      updateGeneratedImageColor(image, theme);
+    });
+  });
+}
+
+function initializeGeneratedImage(image) {
+  // set its size
+  image.style.width = (image.naturalWidth / 2).toString() + "px";
+  image.style.height = (image.naturalHeight / 2).toString() + "px";
+
+  let theme = getTheme();
+  updateGeneratedImageColor(image, theme);
+}
+
+function setupGeneratedImages() {
+  // get all of the generated images
+  let images = document.querySelectorAll("img.ml4p-figure-generated-static");
+  installGeneratedImageColorChangers(images);
 }
 
 // misc.

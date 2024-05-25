@@ -230,3 +230,10 @@ ul.mlp4-tocbar-nested {
 input.ml4p-toggle-dark-mode {
   margin-left: 10px;
 }
+
+/* FIGURES */
+/* ======= */
+
+img.ml4p-figure-generated-static {
+  margin: 0em;
+}

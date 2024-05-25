@@ -20,7 +20,7 @@ continuous:
 html:
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
 	mkdir -p $(BUILDDIR)/html/_static/vis
-	cp -r vis/js $(BUILDDIR)/html/_static/vis/js
+	cp -r vis/js $(BUILDDIR)/html/_static/vis
 
 .PHONY: clean
 clean:

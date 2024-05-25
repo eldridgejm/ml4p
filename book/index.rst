@@ -25,17 +25,19 @@ A truly introductory machine learning textbook by
 
 .. jsfig:: 1d-risk
    :align: start
+   :html_output: dynamic
 
    {
-      draw_data_labels: true,
-      loss: "square",
-      draw_x_ticks: false,
-      risk_style: "as-you-go",
-      animation: [
+      "draw_data_labels": true,
+      "loss": "square",
+      "draw_x_ticks": false,
+      "risk_style": "as-you-go",
+      "h_selectable": false,
+      "animation": [
         "sweep_hypothesis",
         {
-          style: "back-and-forth",
-          show_buttons: false
+          "style": "back-and-forth",
+          "show_buttons": false
         }
       ],
    }

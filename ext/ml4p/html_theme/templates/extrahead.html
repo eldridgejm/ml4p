@@ -2,14 +2,15 @@
 <script>
   // the theme is either "dark" or "light". We can change the theme by setting
   // the data-bs-theme attribute on the html element.
-  let THEME = localStorage.getItem('theme');
-  if (THEME === undefined) {
-    THEME = window.matchMedia("(prefers-color-scheme: dark)").matches
+  let theme = localStorage.getItem('ml4p-theme');
+  let validThemes = ["dark", "light"];
+  if (!validThemes.includes(theme)) {
+    theme = window.matchMedia("(prefers-color-scheme: dark)").matches
       ? "dark"
       : "light";
   }
-  localStorage.setItem('theme', THEME);
-  document.documentElement.setAttribute('data-bs-theme', THEME);
+  localStorage.setItem('ml4p-theme', theme);
+  document.documentElement.setAttribute('data-bs-theme', theme);
 </script>
 
 <!-- bootstrap -->
@@ -38,12 +39,3 @@
 
 <!-- p5 -->
 <script src="{{ pathto("_static/vis/js/lib/p5/p5.min.js", 1) }}"></script>
-
-{% if active_page.is_section %}
-<link href="{{ pathto("_static/ml4p-section.css", 1) }}" rel="stylesheet">
-<link href="{{ pathto("_static/ml4p-tocbar.css", 1) }}" rel="stylesheet">
-{% endif %}
-
-{% if active_page.is_index %}
-<link href="{{ pathto("_static/ml4p-index.css", 1) }}" rel="stylesheet">
-{% endif %}
