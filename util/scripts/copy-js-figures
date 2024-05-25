@@ -1,0 +1,28 @@
+#! /usr/bin/env bash
+
+# copy-js-figures
+# ---------------
+# Copies figures from the vis/js directory to the sphinx HTML output.
+#
+# Arguments:
+#  1. The build directory.
+
+cd "$(git rev-parse --show-toplevel)" || exit 1
+
+# Check for the correct number of arguments.
+if [ "$#" -ne 1 ]; then
+    echo "Usage: copy-js-figures <build-dir>"
+    exit 1
+fi
+
+mkdir -p "$1/html/_static/vis"
+cp -r vis/js "$1/html/_static/vis"
+
+# clean up files that should not be copied
+
+cd "$1/html/_static/vis/js" || exit 1
+fd Makefile --exec rm {}
+fd _build --type d --no-ignore --exec rm -r {}
+fd --type x --exec rm {}
+
+rm -rf template

@@ -13,8 +13,7 @@ develop:
 .PHONY: html
 html:
 	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS)
-	mkdir -p $(BUILDDIR)/html/_static/vis
-	cp -r vis/js $(BUILDDIR)/html/_static/vis
+	copy-js-figures $(BUILDDIR)
 
 .PHONY: clean
 clean:
