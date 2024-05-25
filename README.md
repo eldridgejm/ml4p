@@ -6,6 +6,9 @@
 
 - [x] Start documentation (sphinx with jsdoc?)
 - [x] Use KaTeX instead of MathJax?
-- [ ] Change from `mlbook` to `ml4p`
-- [ ] Clean up the CSS for theming
-- [ ] Clean up the JS for theming
+- [x] Change from `mlbook` to `ml4p`
+- [x] Clean up the CSS for theming
+- [x] Clean up the JS for theming
+- [ ] Update genfig for static js files
+- [ ] Document theme
+- [ ] Update genfig for python
