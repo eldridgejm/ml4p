@@ -29,4 +29,5 @@ exclude_patterns = []
 
 html_theme = "ml4p"
 html_theme_path = ["../ext/"]
-templates_path = ["../ext/ml4p/theme/templates"]
+html_static_path = ["../ext/ml4p/html_theme/static"]
+templates_path = ["../ext/ml4p/html_theme/templates"]

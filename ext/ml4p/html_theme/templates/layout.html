@@ -1,4 +1,5 @@
 {%- extends "basic/layout.html" %}
+
 {% from 'sidebar.html' import make_sidebar with context %}
 
 {%- block extrahead %}
@@ -23,10 +24,14 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
 <!-- ml4p -->
-<link href="{{ pathto("_static/ml4p.css", 1) }}" rel="stylesheet">
-<link href="{{ pathto("_static/ml4p-sidebar.css", 1) }}" rel="stylesheet">
-<script src="{{ pathto("_static/ml4p-sidebar.js", 1) }}"></script>
-<script src="{{ pathto("_static/ml4p.js", 1) }}"></script>
+<link href="{{ pathto("_static/stylesheets/ml4p.css", 1) }}" rel="stylesheet">
+<link href="{{ pathto("_static/stylesheets/ml4p-sidebar.css", 1) }}" rel="stylesheet">
+<script src="{{ pathto("_static/js/ml4p-sidebar.js", 1) }}"></script>
+<script src="{{ pathto("_static/js/ml4p.js", 1) }}"></script>
+
+<!-- pygments -->
+<link id="code-stylesheet" href="{{ pathto("_static/stylesheets/code-dark.css", 1) }}" rel="stylesheet">
+<link id="code-stylesheet" href="{{ pathto("_static/stylesheets/code-light.css", 1) }}" rel="stylesheet">
 
 <!-- google fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -36,9 +41,6 @@
 <!-- p5 -->
 <script src="{{ pathto("_static/vis/js/lib/p5/p5.min.js", 1) }}"></script>
 
-<!-- pygments -->
-<link id="code-stylesheet" href="{{ pathto("_static/code-dark.css", 1) }}" rel="stylesheet">
-<link id="code-stylesheet" href="{{ pathto("_static/code-light.css", 1) }}" rel="stylesheet">
 
 <!-- katex -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" integrity="sha384-wcIxkf4k558AjM3Yz3BBFQUbk/zgIYC2R0QpeeYb+TwlBVMrlgLqwRjRtGZiK7ww" crossorigin="anonymous">
