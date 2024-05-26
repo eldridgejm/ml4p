@@ -5,10 +5,10 @@
   >
     On this page
   </span>
-  <ul class="list-unstyled" id="tocbar">
+  <ul class="list-unstyled" id="ml4p-tocbar">
     {%- for (heading, id, level, prev_level) in headings %} {% if level >
     prev_level %}
-    <ul class="list-unstyled tocbar-{{ level }} tocbar-nested">
+    <ul class="list-unstyled ml4p-tocbar-{{ level }} ml4p-tocbar-nested">
       {% elif level < prev_level %}
     </ul>
     {% endif %} {% set prev_level = level %}

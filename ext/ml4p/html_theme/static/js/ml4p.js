@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
   setupFoldIcons();
   setupThemeModeToggles();
   setupGeneratedImages();
+  setupTocBarScrollSpy();
 });
 
 // theme change events
@@ -204,4 +205,14 @@ function changeAllHeaderLinkCharacters() {
   headerLinks.forEach(function (link) {
     link.textContent = "#";
   });
+}
+
+function setupTocBarScrollSpy() {
+  // set the "data-bs-spy" attribute of the body element to "scroll"
+  // this enables the Bootstrap scrollspy plugin
+  document.body.setAttribute("data-bs-spy", "scroll");
+
+  // set the "data-bs-target" attribute of the body element to "#tocbar"
+  // this tells the scrollspy plugin to use the tocbar as the target
+  document.body.setAttribute("data-bs-target", "#ml4p-tocbar");
 }
